@@ -30,3 +30,20 @@ MediStore Diabetes Prediction is an AI-powered project designed to predict the l
    ```bash
    pip install -r requirements.txt
    ```
+
+## Architecture Diagram
+```mermaid
+graph TD
+    A[Raw Dataset: diabetes.csv] -->|Load Data| B(Pandas DataFrame)
+    B --> C{Exploratory Data Analysis}
+    C -->|Visualizations| D[Matplotlib / Seaborn]
+    C --> E[Data Preprocessing]
+    E -->|Handle Missing Values / Scaling| F(StandardScaler)
+    F --> G[Train/Test Split]
+    G --> H[Model Training]
+    H -->|Support Vector Machine| I((Trained Model))
+    H -->|Random Forest Classifier| I
+    I --> J[Model Evaluation]
+    J -->|Accuracy, Precision, Recall, F1| K{Prediction Output}
+    K -->|Diabetic / Non-Diabetic| L[Final Result]
+```
