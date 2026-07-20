@@ -47,3 +47,27 @@ graph TD
     J -->|Accuracy, Precision, Recall, F1| K{Prediction Output}
     K -->|Diabetic / Non-Diabetic| L[Final Result]
 ```
+
+## Project Structure
+```text
+MediStore Diabetes Prediction/
+│
+├── diabetes.csv                 # The raw dataset containing patient records
+├── diabetes-prediction.ipynb    # Jupyter Notebook for EDA, preprocessing, and model training
+├── requirements.txt             # Python package dependencies
+├── .gitignore                   # Ignored files and folders
+└── README.md                    # Project documentation
+```
+
+## Usage Guide
+1. **Launch Jupyter Notebook**:
+   ```bash
+   jupyter notebook
+   ```
+2. **Open `diabetes-prediction.ipynb`**.
+3. **Run the cells sequentially**:
+   - The first few cells will import necessary libraries and load `diabetes.csv`.
+   - Further cells will perform data preprocessing and normalization.
+   - Run the training cells to train the `RandomForestClassifier` or `SVM` models.
+   - The final cells evaluate the model and print out the accuracy, precision, and recall metrics.
+4. **Custom Data**: If you wish to test custom data, format it identically to `diabetes.csv` and adjust the loading block in the notebook.
