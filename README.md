@@ -1,4 +1,4 @@
-  # 💊 MediStore AI - Diabetic Prediction System
+   #  MediStore AI - Diabetic Prediction System
 
   **A Clinical-Grade Machine Learning Tool for Diabetes Risk Assessment**
   
