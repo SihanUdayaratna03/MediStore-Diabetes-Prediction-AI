@@ -1,73 +1,132 @@
-# MediStore Diabetes Prediction AI
+<div align="center">
+  <img src="images/landing_bg.png" alt="MediStore AI Banner" width="100%" />
 
-## Project Overview
-MediStore Diabetes Prediction is an AI-powered project designed to predict the likelihood of diabetes in patients based on various medical predictors. By leveraging machine learning algorithms on medical datasets, the project aims to assist healthcare professionals with early detection and risk assessment.
+  # 💊 MediStore AI - Diabetic Prediction System
 
-## Features
-- **Predictive Modeling**: Utilizes robust machine learning models (like SVM, Random Forest) to accurately predict diabetes outcomes.
-- **Data Visualization**: Includes visual exploratory data analysis (EDA) to understand feature distributions and correlations.
-- **Interactive Notebook**: Provided as an easy-to-use Jupyter Notebook interface for seamless experimentation and tuning.
+  **A Clinical-Grade Machine Learning Tool for Diabetes Risk Assessment**
+  
+  [![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python&logoColor=white)](https://python.org)
+  [![Streamlit](https://img.shields.io/badge/Streamlit-1.28%2B-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io)
+  [![Scikit-Learn](https://img.shields.io/badge/scikit--learn-1.3%2B-F7931E?logo=scikit-learn&logoColor=white)](https://scikit-learn.org)
+</div>
 
-## Technologies Used
-- **Language**: Python 3
-- **Data Manipulation**: NumPy, Pandas
-- **Machine Learning**: Scikit-Learn
-- **Data Visualization**: Matplotlib, Seaborn, Plotly
-- **Model Deployment/Saving**: Joblib, Streamlit
+<br>
 
-## Installation and Setup Instructions
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/SihanUdayaratna03/MediStore-Diabetes-Prediction-AI.git
-   cd MediStore-Diabetes-Prediction-AI
-   ```
-2. **Create a virtual environment** (optional but recommended):
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows use: venv\Scripts\activate
-   ```
-3. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+## 🚀 Overview
 
-## Architecture Diagram
+**MediStore AI** is a professional, beautifully designed web application built to predict the likelihood of diabetes in patients using clinical biomarkers. Powered by a Support Vector Machine (SVM) algorithm, it provides instant, highly accurate risk probabilities, detailed clinical analysis, and personalised health recommendations.
+
+Designed with a modern **Glassmorphism UI** aesthetic, the application seamlessly bridges the gap between powerful machine learning inference and an intuitive, pharmacist-friendly user experience.
+
+---
+
+## ✨ Key Features
+
+- **🎨 Professional Glassmorphism UI:** Stunning, responsive interface featuring transparent frosted-glass cards, dynamic gradient overlays, and a custom CSS framework.
+- **⚡ Instant AI Prediction:** Real-time inference using a trained SVM model.
+- **📊 Comprehensive Risk Analysis:** Detailed probability breakdowns with visual risk gauge charts (powered by Plotly).
+- **🔬 Clinical Biomarker Evaluation:** Dynamic identification of specific positive indicators and risk factors based on the patient's inputted data.
+- **💡 Actionable Recommendations:** Tailored clinical and lifestyle recommendations based on the final prediction outcome.
+- **🔒 100% Private & Local:** All inference runs locally in the browser/server. No patient data is sent to external APIs.
+
+---
+
+## 🏗️ System Architecture
+
+The application follows a streamlined, single-page architecture built entirely in Python using Streamlit, seamlessly handling both the frontend presentation and backend model inference.
+
 ```mermaid
 graph TD
-    A[Raw Dataset: diabetes.csv] -->|Load Data| B(Pandas DataFrame)
-    B --> C{Exploratory Data Analysis}
-    C -->|Visualizations| D[Matplotlib / Seaborn]
-    C --> E[Data Preprocessing]
-    E -->|Handle Missing Values / Scaling| F(StandardScaler)
-    F --> G[Train/Test Split]
-    G --> H[Model Training]
-    H -->|Support Vector Machine| I((Trained Model))
-    H -->|Random Forest Classifier| I
-    I --> J[Model Evaluation]
-    J -->|Accuracy, Precision, Recall, F1| K{Prediction Output}
-    K -->|Diabetic / Non-Diabetic| L[Final Result]
+    classDef frontend fill:#003366,stroke:#00c8be,stroke-width:2px,color:#fff;
+    classDef backend fill:#001a33,stroke:#7fffd4,stroke-width:2px,color:#fff;
+    classDef model fill:#004d40,stroke:#00ffcc,stroke-width:2px,color:#fff;
+    classDef user fill:#333,stroke:#fff,stroke-width:2px,color:#fff;
+
+    User([👤 User / Pharmacist]):::user
+
+    subgraph Frontend ["🖥️ Streamlit UI Layer"]
+        LandingPage[Landing Page View]:::frontend
+        Dashboard[Prediction Dashboard]:::frontend
+        Sidebar[Patient Data Input Form]:::frontend
+        Results[Risk Results & Gauge Charts]:::frontend
+    end
+
+    subgraph Backend ["⚙️ Inference Engine"]
+        Scaler[[StandardScaler <br> scaler_svm.pkl]]:::model
+        SVM[[SVM Classifier <br> diabetes_model.pkl]]:::model
+    end
+
+    User -->|Visits Web App| LandingPage
+    LandingPage -->|Clicks Get Started| Dashboard
+    User -->|Enters 8 Biomarkers| Sidebar
+    Sidebar -->|Raw Patient Data Array| Scaler
+    Scaler -->|Standardised Features| SVM
+    SVM -->|Class Prediction & Probabilities| Results
+    Results -->|Visualises Outcome| Dashboard
 ```
 
-## Project Structure
-```text
-MediStore Diabetes Prediction/
-│
-├── diabetes.csv                 # The raw dataset containing patient records
-├── diabetes-prediction.ipynb    # Jupyter Notebook for EDA, preprocessing, and model training
-├── requirements.txt             # Python package dependencies
-├── .gitignore                   # Ignored files and folders
-└── README.md                    # Project documentation
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend & Routing:** [Streamlit](https://streamlit.io/) (with heavy custom CSS injection)
+- **Machine Learning:** [Scikit-Learn](https://scikit-learn.org/) (SVM, StandardScaler)
+- **Data Visualisation:** [Plotly](https://plotly.com/) (Gauge Charts)
+- **Data Manipulation:** [NumPy](https://numpy.org/), [Pandas](https://pandas.pydata.org/)
+- **Model Serialisation:** Joblib
+
+---
+
+## 💻 Local Setup & Installation
+
+Follow these steps to run MediStore AI locally on your machine.
+
+**1. Clone the repository**
+```bash
+git clone https://github.com/SihanUdayaratna03/MediStore-Diabetes-Prediction-AI.git
+cd MediStore-Diabetes-Prediction-AI
 ```
 
-## Usage Guide
-1. **Launch Jupyter Notebook**:
-   ```bash
-   jupyter notebook
-   ```
-2. **Open `diabetes-prediction.ipynb`**.
-3. **Run the cells sequentially**:
-   - The first few cells will import necessary libraries and load `diabetes.csv`.
-   - Further cells will perform data preprocessing and normalization.
-   - Run the training cells to train the `RandomForestClassifier` or `SVM` models.
-   - The final cells evaluate the model and print out the accuracy, precision, and recall metrics.
-4. **Custom Data**: If you wish to test custom data, format it identically to `diabetes.csv` and adjust the loading block in the notebook.
+**2. Create a virtual environment (recommended)**
+```bash
+python -m venv venv
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+```
+
+**3. Install dependencies**
+```bash
+pip install -r requirements.txt
+```
+*(Ensure you have `streamlit`, `scikit-learn`, `numpy`, `pandas`, and `plotly` installed).*
+
+**4. Run the application**
+```bash
+streamlit run app.py
+```
+
+The application will launch in your default web browser at `http://localhost:8501`.
+
+---
+
+## 🩺 Dataset & Model Details
+
+The model was trained on the **Pima Indians Diabetes Database** (768 patient records). 
+The following 8 clinical biomarkers are required for prediction:
+1. **Pregnancies:** Number of times pregnant
+2. **Glucose:** Plasma glucose concentration (2 hours in an oral glucose tolerance test)
+3. **Blood Pressure:** Diastolic blood pressure (mm Hg)
+4. **Skin Thickness:** Triceps skin fold thickness (mm)
+5. **Insulin:** 2-Hour serum insulin (mu U/ml)
+6. **BMI:** Body mass index (weight in kg/(height in m)^2)
+7. **Diabetes Pedigree Function:** Genetic predisposition score
+8. **Age:** Years
+
+**Model Performance:** ~78% Accuracy on test splits.
+
+---
+
+> **⚠️ Medical Disclaimer**  
+> *This software is for educational and demonstrative purposes only. It is not intended to be a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of a qualified health provider with any questions regarding a medical condition.*
