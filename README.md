@@ -1,6 +1,3 @@
-<div align="center">
-  <img src="images/landing_bg.png" alt="MediStore AI Banner" width="100%" />
-
   # 💊 MediStore AI - Diabetic Prediction System
 
   **A Clinical-Grade Machine Learning Tool for Diabetes Risk Assessment**
