@@ -30,10 +30,7 @@ dashboard_bg_b64 = img_to_b64(dashboard_bg_path) if os.path.exists(dashboard_bg_
 
 is_landing = st.session_state.page == "landing"
 if is_landing:
-    bg_url_css = '''
-        radial-gradient(circle at 15% 50%, rgba(130, 210, 215, 0.2) 0%, transparent 50%),
-        radial-gradient(circle at 85% 30%, rgba(0, 160, 180, 0.1) 0%, transparent 50%)
-    '''
+    bg_url_css = 'url("https://img.freepik.com/free-photo/medicine-capsules-global-health-with-geometric-pattern-digital-remix_53876-126742.jpg?semt=ais_hybrid&w=740&q=80")'
 else:
     bg_url_css = f'url("data:image/png;base64,{dashboard_bg_b64}")'
 
