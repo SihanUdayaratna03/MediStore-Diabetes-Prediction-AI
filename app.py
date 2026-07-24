@@ -30,7 +30,10 @@ dashboard_bg_b64 = img_to_b64(dashboard_bg_path) if os.path.exists(dashboard_bg_
 
 is_landing = st.session_state.page == "landing"
 if is_landing:
-    bg_url_css = 'url("https://img.freepik.com/free-photo/medicine-capsules-global-health-with-geometric-pattern-digital-remix_53876-126742.jpg?semt=ais_hybrid&w=740&q=80")'
+    bg_url_css = '''
+        radial-gradient(circle at 15% 50%, rgba(130, 210, 215, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 85% 30%, rgba(0, 160, 180, 0.1) 0%, transparent 50%)
+    '''
 else:
     bg_url_css = f'url("data:image/png;base64,{dashboard_bg_b64}")'
 
@@ -38,12 +41,12 @@ else:
 if is_landing:
     overlay_css = """
         background: linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0.85) 0%,
-            rgba(255, 255, 255, 0.60) 40%,
-            rgba(255, 255, 255, 0.05) 75%,
-            transparent 100%
+            135deg,
+            rgba(255, 255, 255, 0.6) 0%,
+            rgba(240, 250, 250, 0.35) 100%
         );
+        backdrop-filter: blur(24px) saturate(120%);
+        -webkit-backdrop-filter: blur(24px) saturate(120%);
     """
 else:
     overlay_css = """
@@ -71,7 +74,7 @@ st.markdown(f"""
     background-image: {bg_url_css};
     background-size: cover;
     background-position: center;
-    background-color: {'#a7ced4' if is_landing else 'transparent'};
+    background-color: {'#eef5f5' if is_landing else 'transparent'};
     background-attachment: fixed;
     background-repeat: no-repeat;
     min-height: 100vh;
