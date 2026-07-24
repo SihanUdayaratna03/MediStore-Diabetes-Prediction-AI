@@ -34,27 +34,16 @@ if is_landing:
 else:
     bg_url_css = f'url("data:image/png;base64,{dashboard_bg_b64}")'
 
-# Overlay: directional on landing (shows full background), darker on dashboard
-if is_landing:
-    overlay_css = """
-        background: linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0.85) 0%,
-            rgba(255, 255, 255, 0.60) 40%,
-            rgba(255, 255, 255, 0.05) 75%,
-            transparent 100%
-        );
-    """
-else:
-    overlay_css = """
-        background: linear-gradient(
-            160deg,
-            rgba(2, 22, 38, 0.82) 0%,
-            rgba(0, 38, 55, 0.76) 40%,
-            rgba(0, 55, 65, 0.72) 100%
-        );
-        backdrop-filter: blur(2px);
-    """
+# Overlay: dashboard dark background applied to both landing and dashboard
+overlay_css = """
+    background: linear-gradient(
+        160deg,
+        rgba(2, 22, 38, 0.82) 0%,
+        rgba(0, 38, 55, 0.76) 40%,
+        rgba(0, 55, 65, 0.72) 100%
+    );
+    backdrop-filter: blur(2px);
+"""
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  GLOBAL CSS
@@ -71,7 +60,7 @@ st.markdown(f"""
     background-image: {bg_url_css};
     background-size: cover;
     background-position: center;
-    background-color: {'#eef5f5' if is_landing else 'transparent'};
+    background-color: transparent;
     background-attachment: fixed;
     background-repeat: no-repeat;
     min-height: 100vh;
@@ -114,18 +103,18 @@ st.markdown(f"""
 }}
 .lp-eyebrow {{
     display: inline-flex; align-items: center; gap: 0.45rem;
-    background: rgba(0, 100, 110, 0.1);
-    border: 1px solid rgba(0, 100, 110, 0.3);
+    background: rgba(0, 210, 200, 0.1);
+    border: 1px solid rgba(0, 210, 200, 0.3);
     border-radius: 20px;
     padding: 0.3rem 0.9rem;
     font-size: 0.73rem; font-weight: 700;
-    color: #00606b; letter-spacing: 0.09em; text-transform: uppercase;
+    color: #7fffd4; letter-spacing: 0.09em; text-transform: uppercase;
     margin-bottom: 1.2rem;
 }}
 .lp-eyebrow-dot {{
     width: 7px; height: 7px; border-radius: 50%;
-    background: #00a0b0;
-    box-shadow: 0 0 8px #00a0b0;
+    background: #00d4c8;
+    box-shadow: 0 0 8px #00d4c8;
     animation: pulse-d 2s infinite;
 }}
 @keyframes pulse-d {{
@@ -136,19 +125,19 @@ st.markdown(f"""
     font-family: 'Space Grotesk', sans-serif;
     font-size: clamp(2.6rem, 5.5vw, 4.2rem);
     font-weight: 800;
-    color: #0c3340;
+    color: #e0fffc;
     line-height: 1.10;
     letter-spacing: -0.03em;
     margin-bottom: 1.2rem;
 }}
 .lp-heading .accent {{
-    background: linear-gradient(120deg, #007a8c 0%, #00c8be 60%, #008598 100%);
+    background: linear-gradient(120deg, #7fffd4 0%, #00d4c8 60%, #00a0b0 100%);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     background-clip: text;
 }}
 .lp-subtext {{
     font-size: 1.05rem; font-weight: 500;
-    color: #1a5160;
+    color: rgba(180,240,238,0.85);
     line-height: 1.72; max-width: 500px;
     margin-bottom: 2.4rem;
 }}
@@ -189,18 +178,18 @@ st.markdown(f"""
 /* Stats strip */
 .lp-stats {{
     display: flex; gap: 2.5rem; margin-top: 3rem;
-    border-top: 1px solid rgba(0,0,0,0.1);
+    border-top: 1px solid rgba(0,210,200,0.2);
     padding-top: 1.8rem;
 }}
 .lp-stat {{ }}
 .lp-stat-val {{
     font-family: 'Space Grotesk', sans-serif;
-    font-size: 1.7rem; font-weight: 800; color: #007a8c;
+    font-size: 1.7rem; font-weight: 800; color: #7fffd4;
     line-height: 1;
 }}
 .lp-stat-lbl {{
     font-size: 0.74rem; font-weight: 600;
-    color: #1a5160;
+    color: rgba(180,240,238,0.7);
     text-transform: uppercase; letter-spacing: 0.08em;
     margin-top: 0.2rem;
 }}
