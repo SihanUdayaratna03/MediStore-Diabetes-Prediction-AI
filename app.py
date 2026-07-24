@@ -38,12 +38,12 @@ else:
 if is_landing:
     overlay_css = """
         background: linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.6) 0%,
-            rgba(240, 250, 250, 0.35) 100%
+            90deg,
+            rgba(255, 255, 255, 0.85) 0%,
+            rgba(255, 255, 255, 0.60) 40%,
+            rgba(255, 255, 255, 0.05) 75%,
+            transparent 100%
         );
-        backdrop-filter: blur(24px) saturate(120%);
-        -webkit-backdrop-filter: blur(24px) saturate(120%);
     """
 else:
     overlay_css = """
