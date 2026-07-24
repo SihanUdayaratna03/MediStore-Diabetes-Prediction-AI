@@ -9,7 +9,7 @@ import base64, os
 # ══════════════════════════════════════════════════════════════════════════════
 st.set_page_config(
     page_title="MediStore AI · Diabetic Prediction",
-    page_icon="💊",
+    page_icon="",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
@@ -24,36 +24,26 @@ def img_to_b64(path: str) -> str:
         return base64.b64encode(f.read()).decode()
 
 _base = os.path.dirname(os.path.abspath(__file__))
-landing_bg_path   = os.path.join(_base, "images", "landing_bg.png")
 dashboard_bg_path = os.path.join(_base, "images", "background.png")
 
-landing_bg_b64   = img_to_b64(landing_bg_path)   if os.path.exists(landing_bg_path)   else ""
 dashboard_bg_b64 = img_to_b64(dashboard_bg_path) if os.path.exists(dashboard_bg_path) else ""
 
 is_landing = st.session_state.page == "landing"
-bg_b64 = landing_bg_b64 if is_landing else dashboard_bg_b64
-
-# Overlay: directional on landing (shows full background), darker on dashboard
 if is_landing:
-    overlay_css = """
-        background: linear-gradient(
-            90deg,
-            rgba(50, 90, 160, 0.90) 0%,
-            rgba(50, 90, 160, 0.75) 40%,
-            rgba(50, 90, 160, 0.15) 75%,
-            transparent 100%
-        );
-    """
+    bg_url_css = 'url("https://img.freepik.com/free-photo/medicine-capsules-global-health-with-geometric-pattern-digital-remix_53876-126742.jpg?semt=ais_hybrid&w=740&q=80")'
 else:
-    overlay_css = """
-        background: linear-gradient(
-            160deg,
-            rgba(2, 22, 38, 0.82) 0%,
-            rgba(0, 38, 55, 0.76) 40%,
-            rgba(0, 55, 65, 0.72) 100%
-        );
-        backdrop-filter: blur(2px);
-    """
+    bg_url_css = f'url("data:image/png;base64,{dashboard_bg_b64}")'
+
+# Overlay: dashboard dark background applied to both landing and dashboard
+overlay_css = """
+    background: linear-gradient(
+        160deg,
+        rgba(2, 22, 38, 0.82) 0%,
+        rgba(0, 38, 55, 0.76) 40%,
+        rgba(0, 55, 65, 0.72) 100%
+    );
+    backdrop-filter: blur(2px);
+"""
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  GLOBAL CSS
@@ -67,9 +57,10 @@ st.markdown(f"""
 /* ── Background ───────────────────────────────────────────────────────── */
 [data-testid="stAppViewContainer"] {{
     font-family: 'Inter', sans-serif;
-    background-image: url("data:image/png;base64,{bg_b64}");
+    background-image: {bg_url_css};
     background-size: cover;
     background-position: center;
+    background-color: transparent;
     background-attachment: fixed;
     background-repeat: no-repeat;
     min-height: 100vh;
@@ -97,68 +88,23 @@ st.markdown(f"""
    LANDING PAGE STYLES
    ══════════════════════════════════════════════════════════════════════════ */
 
-/* Navbar */
-.lp-nav {{
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 1.1rem 3rem;
-    background: rgba(230, 240, 255, 0.95);
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-    position: sticky; top: 0; z-index: 200;
-}}
-.lp-brand {{
-    display: flex; align-items: center; gap: 0.65rem;
-}}
-.lp-logo {{
-    width: 36px; height: 36px;
-    background: #0073cc;
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.25rem; color: #fff;
-    box-shadow: 0 4px 10px rgba(0,115,204,0.3);
-}}
-.lp-brand-name {{
-    font-family: 'Inter', sans-serif;
-    font-size: 1.3rem; font-weight: 800;
-    color: #000000; letter-spacing: -0.01em;
-}}
-.lp-brand-name span {{ color: #000000; }}
-.lp-nav-links {{
-    display: flex; align-items: center; gap: 2.2rem;
-}}
-.lp-nav-link {{
-    font-size: 0.85rem; font-weight: 600; color: #333333;
-    text-transform: uppercase; letter-spacing: 0.02em; cursor: default;
-    transition: color 0.18s;
-}}
-.lp-nav-link:hover {{ color: #000066; }}
-.lp-contact-btn {{
-    background: #000055;
-    color: #fff !important;
-    border: none;
-    border-radius: 6px;
-    padding: 0.6rem 1.4rem;
-    font-size: 0.85rem; font-weight: 700;
-    letter-spacing: 0.05em; text-transform: uppercase;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0,0,85,0.30);
-    transition: background 0.18s, transform 0.18s;
-}}
-.lp-contact-btn:hover {{
-    background: #000077;
-    transform: translateY(-2px);
+/* Hero section */
+@keyframes fadeInUp {{
+    0% {{ opacity: 0; transform: translateY(20px); }}
+    100% {{ opacity: 1; transform: translateY(0); }}
 }}
 
-/* Hero section */
 .lp-hero {{
-    min-height: calc(100vh - 62px);
+    min-height: 100vh;
     display: flex; align-items: center;
     padding: 4rem 3rem 4rem 4rem;
     max-width: 680px;
+    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }}
 .lp-eyebrow {{
     display: inline-flex; align-items: center; gap: 0.45rem;
-    background: rgba(0,210,200,0.14);
-    border: 1px solid rgba(0,210,200,0.35);
+    background: rgba(0, 210, 200, 0.1);
+    border: 1px solid rgba(0, 210, 200, 0.3);
     border-radius: 20px;
     padding: 0.3rem 0.9rem;
     font-size: 0.73rem; font-weight: 700;
@@ -179,19 +125,19 @@ st.markdown(f"""
     font-family: 'Space Grotesk', sans-serif;
     font-size: clamp(2.6rem, 5.5vw, 4.2rem);
     font-weight: 800;
-    color: #ffffff;
+    color: #e0fffc;
     line-height: 1.10;
     letter-spacing: -0.03em;
     margin-bottom: 1.2rem;
 }}
 .lp-heading .accent {{
-    background: linear-gradient(120deg, #7fffd4 0%, #00d4c8 60%, #a8fdf0 100%);
+    background: linear-gradient(120deg, #7fffd4 0%, #00d4c8 60%, #00a0b0 100%);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     background-clip: text;
 }}
 .lp-subtext {{
-    font-size: 1.05rem; font-weight: 400;
-    color: rgba(210,240,238,0.78);
+    font-size: 1.05rem; font-weight: 500;
+    color: rgba(180,240,238,0.85);
     line-height: 1.72; max-width: 500px;
     margin-bottom: 2.4rem;
 }}
@@ -232,7 +178,7 @@ st.markdown(f"""
 /* Stats strip */
 .lp-stats {{
     display: flex; gap: 2.5rem; margin-top: 3rem;
-    border-top: 1px solid rgba(255,255,255,0.10);
+    border-top: 1px solid rgba(0,210,200,0.2);
     padding-top: 1.8rem;
 }}
 .lp-stat {{ }}
@@ -242,8 +188,8 @@ st.markdown(f"""
     line-height: 1;
 }}
 .lp-stat-lbl {{
-    font-size: 0.74rem; font-weight: 500;
-    color: rgba(180,240,238,0.60);
+    font-size: 0.74rem; font-weight: 600;
+    color: rgba(180,240,238,0.7);
     text-transform: uppercase; letter-spacing: 0.08em;
     margin-top: 0.2rem;
 }}
@@ -494,31 +440,6 @@ def load_artifacts():
 # ══════════════════════════════════════════════════════════════════════════════
 if st.session_state.page == "landing":
 
-    # ── Navbar ────────────────────────────────────────────────────────────────
-    st.markdown("""
-    <div class="lp-nav">
-      <div class="lp-brand">
-        <div class="lp-logo">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <path d="M16 10a4 4 0 0 1-8 0"></path>
-            <line x1="12" y1="11" x2="12" y2="17"></line>
-            <line x1="9" y1="14" x2="15" y2="14"></line>
-          </svg>
-        </div>
-        <div class="lp-brand-name">Medi<span>Store</span></div>
-      </div>
-      <div class="lp-nav-links">
-        <span class="lp-nav-link">Home</span>
-        <span class="lp-nav-link">Features</span>
-        <span class="lp-nav-link">How It Works</span>
-        <span class="lp-nav-link">Pricing</span>
-        <button class="lp-contact-btn">Contact Us</button>
-      </div>
-    </div>
-    """, unsafe_allow_html=True)
-
     # ── Hero layout: text left, background visible on the right ───────────
     hero_col, _ = st.columns([5, 4], gap="large")
 
@@ -528,23 +449,20 @@ if st.session_state.page == "landing":
           <div>
             <div class="lp-eyebrow">
               <div class="lp-eyebrow-dot"></div>
-              AI-Powered &middot; Clinical Grade
+              Advanced Pharmacy Care
             </div>
             <div class="lp-heading">
-              MediStore AI
+              Clinical Precision<br>at Your Fingertips
             </div>
             <div class="lp-subtext">
-              Get instant, evidence-based diabetes risk predictions powered by
-              machine learning. Enter patient biomarkers, receive a full clinical
-              analysis, personalised risk factors, and actionable health recommendations
-              &mdash; all in seconds.
+              Empowering healthcare professionals with AI-driven insights for proactive diabetes management and personalized patient care.
             </div>
           </div>
         </div>
         """, unsafe_allow_html=True)
 
         # Streamlit button triggers page switch
-        if st.button("Get Started", key="get_started_btn"):
+        if st.button("Access Risk Assessment", key="get_started_btn"):
             st.session_state.page = "dashboard"
             st.session_state.sidebar_state = "expanded"
             st.rerun()
@@ -574,19 +492,19 @@ if st.session_state.page == "landing":
     st.markdown("""
     <style>
     [data-testid="stMain"] .stButton > button {
-        background: #000055 !important;
+        background: #00606b !important;
         color: #ffffff !important; border: none !important;
         border-radius: 6px !important;
         font-family: 'Inter', sans-serif !important;
         font-size: 0.85rem !important; font-weight: 700 !important;
         letter-spacing: 0.05em !important; text-transform: uppercase !important;
         padding: 0.8rem 2.2rem !important;
-        box-shadow: 0 4px 12px rgba(0,0,85,0.4) !important;
+        box-shadow: 0 4px 12px rgba(0, 96, 107, 0.4) !important;
         transition: background 0.18s, transform 0.18s !important;
         margin-bottom: 1rem !important;
     }
     [data-testid="stMain"] .stButton > button:hover {
-        background: #000077 !important;
+        background: #008598 !important;
         transform: translateY(-2px) !important;
     }
     </style>
@@ -605,6 +523,7 @@ else:
         if st.button("← Home", key="back_btn"):
             st.session_state.page = "landing"
             st.rerun()
+
     with nav_col2:
         st.markdown("""
         <div class="navbar" style="margin-bottom:0;">
