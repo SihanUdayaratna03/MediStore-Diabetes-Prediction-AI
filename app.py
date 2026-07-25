@@ -591,11 +591,12 @@ else:
         st.stop()
 
     # ── Hero card ─────────────────────────────────────────────────────────────
-    st.markdown("""
+    hero_title_html = get_blur_text_html("MediStore Diabetic Prediction System", delay_ms=150)
+    st.markdown(f"""
     <div class="card" style="padding:2rem 2.8rem 1.6rem;">
       <div class="card-accent"></div>
       <div class="hero-tag">💊 Clinical AI Tool · v2.0</div>
-      <div class="hero-title">MediStore Diabetic Prediction System</div>
+      <div class="hero-title">{hero_title_html}</div>
       <div class="hero-sub">AI-powered risk assessment · Support Vector Machine · Enter patient details in the sidebar</div>
       <div class="stats-row">
         <div class="stat"><div><div class="stat-val">SVM</div><div class="stat-lbl">Algorithm</div></div></div>
