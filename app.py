@@ -88,6 +88,26 @@ st.markdown(f"""
    LANDING PAGE STYLES
    ══════════════════════════════════════════════════════════════════════════ */
 
+@keyframes blur-text {{
+  0% {{
+    filter: blur(10px);
+    opacity: 0;
+    transform: translateY(-50px);
+  }}
+  100% {{
+    filter: blur(0px);
+    opacity: 1;
+    transform: translateY(0);
+  }}
+}}
+
+.blur-word {{
+  display: inline-block;
+  will-change: transform, filter, opacity;
+  animation: blur-text 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  opacity: 0;
+}}
+
 /* Hero section */
 @keyframes fadeInUp {{
     0% {{ opacity: 0; transform: translateY(20px); }}
