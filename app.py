@@ -459,11 +459,9 @@ def get_blur_text_html(text, class_name="", delay_ms=150):
     spans = []
     for i, word in enumerate(words):
         delay = i * (delay_ms / 1000.0)
-        # Add non-breaking space for all but the last word
-        space = "&nbsp;" if i < len(words) - 1 else ""
-        span_html = f'<span class="blur-word {class_name}" style="animation-delay: {delay}s;">{word}</span>{space}'
+        span_html = f'<span class="blur-word {class_name}" style="animation-delay: {delay}s;">{word}</span>'
         spans.append(span_html)
-    return f'<div style="display: flex; flex-wrap: wrap;">{"".join(spans)}</div>'
+    return f'<div style="display: flex; flex-wrap: wrap; column-gap: 0.3em; row-gap: 0.1em;">{"".join(spans)}</div>'
 
 
 # ══════════════════════════════════════════════════════════════════════════════
