@@ -88,6 +88,26 @@ st.markdown(f"""
    LANDING PAGE STYLES
    ══════════════════════════════════════════════════════════════════════════ */
 
+@keyframes blur-text {{
+  0% {{
+    filter: blur(10px);
+    opacity: 0;
+    transform: translateY(-50px);
+  }}
+  100% {{
+    filter: blur(0px);
+    opacity: 1;
+    transform: translateY(0);
+  }}
+}}
+
+.blur-word {{
+  display: inline-block;
+  will-change: transform, filter, opacity;
+  animation: blur-text 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  opacity: 0;
+}}
+
 /* Hero section */
 @keyframes fadeInUp {{
     0% {{ opacity: 0; transform: translateY(20px); }}
@@ -434,6 +454,15 @@ def load_artifacts():
     except FileNotFoundError:
         return None, None
 
+def get_blur_text_html(text, class_name="", delay_ms=150):
+    words = text.split(" ")
+    spans = []
+    for i, word in enumerate(words):
+        delay = i * (delay_ms / 1000.0)
+        span_html = f'<span class="blur-word {class_name}" style="animation-delay: {delay}s;">{word}</span>'
+        spans.append(span_html)
+    return f'<div style="display: flex; flex-wrap: wrap; column-gap: 0.3em; row-gap: 0.1em;">{"".join(spans)}</div>'
+
 
 # ══════════════════════════════════════════════════════════════════════════════
 #  ███████  LANDING PAGE
@@ -444,7 +473,10 @@ if st.session_state.page == "landing":
     hero_col, _ = st.columns([5, 4], gap="large")
 
     with hero_col:
-        st.markdown("""
+        lp_heading_1 = get_blur_text_html("Clinical Precision", delay_ms=150)
+        lp_heading_2 = get_blur_text_html("at Your Fingertips", delay_ms=150)
+        
+        st.markdown(f"""
         <div class="lp-hero">
           <div>
             <div class="lp-eyebrow">
@@ -452,7 +484,8 @@ if st.session_state.page == "landing":
               Advanced Pharmacy Care
             </div>
             <div class="lp-heading">
-              Clinical Precision<br>at Your Fingertips
+              {lp_heading_1}
+              {lp_heading_2}
             </div>
             <div class="lp-subtext">
               Empowering healthcare professionals with AI-driven insights for proactive diabetes management and personalized patient care.
@@ -560,11 +593,12 @@ else:
         st.stop()
 
     # ── Hero card ─────────────────────────────────────────────────────────────
-    st.markdown("""
+    hero_title_html = get_blur_text_html("MediStore Diabetic Prediction System", delay_ms=150)
+    st.markdown(f"""
     <div class="card" style="padding:2rem 2.8rem 1.6rem;">
       <div class="card-accent"></div>
       <div class="hero-tag">💊 Clinical AI Tool · v2.0</div>
-      <div class="hero-title">MediStore Diabetic Prediction System</div>
+      <div class="hero-title">{hero_title_html}</div>
       <div class="hero-sub">AI-powered risk assessment · Support Vector Machine · Enter patient details in the sidebar</div>
       <div class="stats-row">
         <div class="stat"><div><div class="stat-val">SVM</div><div class="stat-lbl">Algorithm</div></div></div>
