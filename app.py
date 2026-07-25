@@ -475,7 +475,10 @@ if st.session_state.page == "landing":
     hero_col, _ = st.columns([5, 4], gap="large")
 
     with hero_col:
-        st.markdown("""
+        lp_heading_1 = get_blur_text_html("Clinical Precision", delay_ms=150)
+        lp_heading_2 = get_blur_text_html("at Your Fingertips", delay_ms=150)
+        
+        st.markdown(f"""
         <div class="lp-hero">
           <div>
             <div class="lp-eyebrow">
@@ -483,7 +486,8 @@ if st.session_state.page == "landing":
               Advanced Pharmacy Care
             </div>
             <div class="lp-heading">
-              Clinical Precision<br>at Your Fingertips
+              {lp_heading_1}
+              {lp_heading_2}
             </div>
             <div class="lp-subtext">
               Empowering healthcare professionals with AI-driven insights for proactive diabetes management and personalized patient care.
