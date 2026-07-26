@@ -1,0 +1,18 @@
+[
+  "Pregnancies",
+  "Glucose",
+  "BloodPressure",
+  "SkinThickness",
+  "Insulin",
+  "BMI",
+  "DiabetesPedigreeFunction",
+  "Age",
+  "Glucose_BMI_Ratio",
+  "Insulin_Resistance",
+  "Age_BMI_Interaction",
+  "BP_Age_Risk",
+  "Glucose_Age",
+  "High_Glucose_Flag",
+  "Obese_Flag",
+  "High_Risk_Age_Flag"
+]
