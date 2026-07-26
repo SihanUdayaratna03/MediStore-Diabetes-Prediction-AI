@@ -42,31 +42,31 @@ graph TD
     classDef model fill:#004d40,stroke:#00ffcc,stroke-width:2px,color:#fff;
     classDef user fill:#333,stroke:#fff,stroke-width:2px,color:#fff;
 
-    User([👤 User / Pharmacist]):::user
+    User(["👤 User / Pharmacist"]):::user
 
     subgraph Frontend ["🖥️ React + Vite UI Layer"]
-        LandingPage[Full-Screen Landing Page]:::frontend
-        Dashboard[Prediction Dashboard]:::frontend
-        Sidebar[Patient Data Input Form]:::frontend
+        LandingPage["Full-Screen Landing Page"]:::frontend
+        Dashboard["Prediction Dashboard"]:::frontend
+        Sidebar["Patient Data Input Form"]:::frontend
     end
 
     subgraph Backend ["⚙️ FastAPI Inference Server"]
-        API[POST /predict Endpoint]:::backend
-        Eng[Feature Engineering (16 Features)]:::backend
-        XGB[[XGBoost Ensemble Model]]:::model
-        SHAP[[SHAP Explainer]]:::model
+        API["POST /predict Endpoint"]:::backend
+        Eng["Feature Engineering (16 Features)"]:::backend
+        XGB[["XGBoost Ensemble Model"]]:::model
+        SHAP[["SHAP Explainer"]]:::model
     end
 
-    User -->|Visits Web App| LandingPage
-    LandingPage -->|Clicks Get Started| Dashboard
-    User -->|Enters Biomarkers| Sidebar
-    Sidebar -->|JSON Payload| API
+    User -->|"Visits Web App"| LandingPage
+    LandingPage -->|"Clicks Get Started"| Dashboard
+    User -->|"Enters Biomarkers"| Sidebar
+    Sidebar -->|"JSON Payload"| API
     API --> Eng
     Eng --> XGB
     Eng --> SHAP
-    XGB -->|Prediction & Probs| API
-    SHAP -->|Base64 Plot Image| API
-    API -->|JSON Response| Dashboard
+    XGB -->|"Prediction & Probs"| API
+    SHAP -->|"Base64 Plot Image"| API
+    API -->|"JSON Response"| Dashboard
 ```
 
 ---
