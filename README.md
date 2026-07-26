@@ -6,7 +6,8 @@
   **A Clinical-Grade Machine Learning Tool for Diabetes Risk Assessment**
   
   [![Python](https://img.shields.io/badge/Python-3.9%2B-blue?logo=python&logoColor=white)](https://python.org)
-  [![Streamlit](https://img.shields.io/badge/Streamlit-1.28%2B-FF4B4B?logo=streamlit&logoColor=white)](https://streamlit.io)
+  [![FastAPI](https://img.shields.io/badge/FastAPI-0.100%2B-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+  [![React](https://img.shields.io/badge/React-18.0%2B-61DAFB?logo=react&logoColor=black)](https://react.dev)
   [![Scikit-Learn](https://img.shields.io/badge/scikit--learn-1.3%2B-F7931E?logo=scikit-learn&logoColor=white)](https://scikit-learn.org)
 </div>
 
@@ -14,7 +15,7 @@
 
 ## 🚀 Overview
 
-**MediStore AI** is a professional, beautifully designed web application built to predict the likelihood of diabetes in patients using clinical biomarkers. Powered by a Support Vector Machine (SVM) algorithm, it provides instant, highly accurate risk probabilities, detailed clinical analysis, and personalised health recommendations.
+**MediStore AI** is a professional, beautifully designed web application built to predict the likelihood of diabetes in patients using clinical biomarkers. Powered by an upgraded XGBoost Ensemble model and Explainable AI (SHAP), it provides instant, highly accurate risk probabilities, detailed clinical analysis, and personalised health recommendations.
 
 Designed with a modern **Glassmorphism UI** aesthetic, the application seamlessly bridges the gap between powerful machine learning inference and an intuitive, pharmacist-friendly user experience.
 
@@ -22,18 +23,18 @@ Designed with a modern **Glassmorphism UI** aesthetic, the application seamlessl
 
 ## ✨ Key Features
 
-- **🎨 Professional Glassmorphism UI:** Stunning, responsive interface featuring transparent frosted-glass cards, dynamic gradient overlays, and a custom CSS framework.
-- **⚡ Instant AI Prediction:** Real-time inference using a trained SVM model.
-- **📊 Comprehensive Risk Analysis:** Detailed probability breakdowns with visual risk gauge charts (powered by Plotly).
+- **🎨 Professional Glassmorphism UI:** Stunning, responsive React interface featuring transparent frosted-glass cards, dynamic full-screen backgrounds, and smooth animations.
+- **⚡ Instant AI Prediction:** Real-time inference using a trained XGBoost Ensemble model (~85%+ accuracy).
+- **🧠 Explainable AI (SHAP):** Visualise exactly how each biomarker influenced the AI's decision.
 - **🔬 Clinical Biomarker Evaluation:** Dynamic identification of specific positive indicators and risk factors based on the patient's inputted data.
 - **💡 Actionable Recommendations:** Tailored clinical and lifestyle recommendations based on the final prediction outcome.
-- **🔒 100% Private & Local:** All inference runs locally in the browser/server. No patient data is sent to external APIs.
+- **🔒 100% Private & Local:** All inference runs locally. No patient data is sent to external APIs.
 
 ---
 
 ## 🏗️ System Architecture
 
-The application follows a streamlined, single-page architecture built entirely in Python using Streamlit, seamlessly handling both the frontend presentation and backend model inference.
+The application has been upgraded to a robust modern web stack: a **Python/FastAPI** backend for heavy machine learning inference and a **React (Vite)** frontend for a seamless, interactive user experience.
 
 ```mermaid
 graph TD
@@ -44,87 +45,92 @@ graph TD
 
     User([👤 User / Pharmacist]):::user
 
-    subgraph Frontend ["🖥️ Streamlit UI Layer"]
-        LandingPage[Landing Page View]:::frontend
+    subgraph Frontend ["🖥️ React + Vite UI Layer"]
+        LandingPage[Full-Screen Landing Page]:::frontend
         Dashboard[Prediction Dashboard]:::frontend
         Sidebar[Patient Data Input Form]:::frontend
-        Results[Risk Results & Gauge Charts]:::frontend
     end
 
-    subgraph Backend ["⚙️ Inference Engine"]
-        Scaler[[StandardScaler <br> scaler_svm.pkl]]:::model
-        SVM[[SVM Classifier <br> diabetes_model.pkl]]:::model
+    subgraph Backend ["⚙️ FastAPI Inference Server"]
+        API[POST /predict Endpoint]:::backend
+        Eng[Feature Engineering (16 Features)]:::backend
+        XGB[[XGBoost Ensemble Model]]:::model
+        SHAP[[SHAP Explainer]]:::model
     end
 
     User -->|Visits Web App| LandingPage
     LandingPage -->|Clicks Get Started| Dashboard
-    User -->|Enters 8 Biomarkers| Sidebar
-    Sidebar -->|Raw Patient Data Array| Scaler
-    Scaler -->|Standardised Features| SVM
-    SVM -->|Class Prediction & Probabilities| Results
-    Results -->|Visualises Outcome| Dashboard
+    User -->|Enters Biomarkers| Sidebar
+    Sidebar -->|JSON Payload| API
+    API --> Eng
+    Eng --> XGB
+    Eng --> SHAP
+    XGB -->|Prediction & Probs| API
+    SHAP -->|Base64 Plot Image| API
+    API -->|JSON Response| Dashboard
 ```
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Frontend & Routing:** [Streamlit](https://streamlit.io/) (with heavy custom CSS injection)
-- **Machine Learning:** [Scikit-Learn](https://scikit-learn.org/) (SVM, StandardScaler)
-- **Data Visualisation:** [Plotly](https://plotly.com/) (Gauge Charts)
-- **Data Manipulation:** [NumPy](https://numpy.org/), [Pandas](https://pandas.pydata.org/)
-- **Model Serialisation:** Joblib
+- **Frontend:** React, Vite, Lucide-React, CSS (Custom Glassmorphism)
+- **Backend:** FastAPI, Uvicorn, Python
+- **Machine Learning:** XGBoost, Scikit-Learn
+- **Explainable AI:** SHAP, Matplotlib
+- **Data Manipulation:** NumPy, Pandas
 
 ---
 
 ## 💻 Local Setup & Installation
 
-Follow these steps to run MediStore AI locally on your machine.
+Follow these steps to run the new dual-architecture MediStore AI locally on your machine.
 
-**1. Clone the repository**
-```bash
-git clone https://github.com/SihanUdayaratna03/MediStore-Diabetes-Prediction-AI.git
-cd MediStore-Diabetes-Prediction-AI
-```
+### 1. Start the Python Backend (FastAPI)
+The backend handles the machine learning inference and runs on port `8000`.
 
-**2. Create a virtual environment (recommended)**
+Open your terminal and run:
 ```bash
-python -m venv venv
+# Activate the virtual environment
 # On Windows:
-venv\Scripts\activate
+.\venv\Scripts\activate
 # On macOS/Linux:
-source venv/bin/activate
-```
+# source venv/bin/activate
 
-**3. Install dependencies**
+# Install any missing backend dependencies (if needed)
+pip install fastapi uvicorn xgboost shap matplotlib
+
+# Start the FastAPI server
+uvicorn server:app --reload --port 8000
+```
+The API is now running at `http://localhost:8000`.
+
+### 2. Start the React Frontend (Vite)
+The frontend serves the UI and runs on port `5173`.
+
+Open a **new, separate terminal** and run:
 ```bash
-pip install -r requirements.txt
-```
-*(Ensure you have `streamlit`, `scikit-learn`, `numpy`, `pandas`, and `plotly` installed).*
+# Navigate to the frontend directory
+cd frontend
 
-**4. Run the application**
-```bash
-streamlit run app.py
+# Install Node modules (first time only)
+npm install
+
+# Start the development server
+npm run dev
 ```
 
-The application will launch in your default web browser at `http://localhost:8501`.
+The application will now be live in your browser at **`http://localhost:5173`**.
 
 ---
 
 ## 🩺 Dataset & Model Details
 
-The model was trained on the **Pima Indians Diabetes Database** (768 patient records). 
-The following 8 clinical biomarkers are required for prediction:
-1. **Pregnancies:** Number of times pregnant
-2. **Glucose:** Plasma glucose concentration (2 hours in an oral glucose tolerance test)
-3. **Blood Pressure:** Diastolic blood pressure (mm Hg)
-4. **Skin Thickness:** Triceps skin fold thickness (mm)
-5. **Insulin:** 2-Hour serum insulin (mu U/ml)
-6. **BMI:** Body mass index (weight in kg/(height in m)^2)
-7. **Diabetes Pedigree Function:** Genetic predisposition score
-8. **Age:** Years
+The upgraded model was trained using a custom engineered pipeline with SMOTE balancing. It expands the original 8 biomarkers into **16 engineered features** for higher precision:
+1. **Base Features:** Pregnancies, Glucose, Blood Pressure, Skin Thickness, Insulin, BMI, Diabetes Pedigree Function, Age
+2. **Engineered Features:** Glucose_BMI_Ratio, Insulin_Resistance, Age_BMI_Interaction, BP_Age_Risk, Glucose_Category, BMI_Category, Age_Category, Metabolic_Syndrome_Risk
 
-**Model Performance:** ~78% Accuracy on test splits.
+**Model Performance:** ~85%+ Accuracy (XGBoost Ensemble).
 
 ---
 
