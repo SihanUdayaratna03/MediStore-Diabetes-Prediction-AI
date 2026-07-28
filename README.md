@@ -123,11 +123,96 @@ The application will now be live in your browser at **`http://localhost:5173`**.
 
 ## 🩺 Dataset & Model Details
 
-The upgraded model was trained using a custom engineered pipeline with SMOTE balancing. It expands the original 8 biomarkers into **16 engineered features** for higher precision:
+### Model v2 — Diabetes Risk Predictor (PIMA Dataset)
+
+The v2 model was trained using a custom engineered pipeline with SMOTE balancing. It expands the original 8 biomarkers into **16 engineered features** for higher precision:
 1. **Base Features:** Pregnancies, Glucose, Blood Pressure, Skin Thickness, Insulin, BMI, Diabetes Pedigree Function, Age
 2. **Engineered Features:** Glucose_BMI_Ratio, Insulin_Resistance, Age_BMI_Interaction, BP_Age_Risk, Glucose_Category, BMI_Category, Age_Category, Metabolic_Syndrome_Risk
 
 **Model Performance:** ~85%+ Accuracy (XGBoost Ensemble).
+
+---
+
+## 🏥 Model v3 — Diabetes Complication Risk Predictor (UCI-130)
+
+A second, independent model trained on the **UCI Diabetes 130-US Hospitals dataset (1999–2008)** with **101,767 real patient records** to predict the risk of early hospital readmission (within 30 days) for diabetic patients.
+
+### Architecture
+
+```
+Input (101,767 patient records)
+        │
+        ▼
+┌─────────────────────────────────┐
+│        Data Preprocessing       │
+│  - Drop high-missing columns    │
+│  - Encode age brackets          │
+│  - Map A1C & glucose results    │
+│  - Map medication changes       │
+│  - ICD-9 diagnosis grouping     │
+└────────────────┬────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────┐
+│         SMOTE Balancing         │
+│  Oversample minority class      │
+│  (<30 day readmissions)         │
+└────────────────┬────────────────┘
+                 │
+                 ▼
+┌──────────────────────────────────────────────┐
+│         Soft-Voting Ensemble (v3)            │
+│                                              │
+│   XGBoost (weight: 2)                        │
+│   + LightGBM (weight: 2)                     │
+│   + Random Forest (weight: 1)                │
+│                                              │
+│   Final prediction = weighted probability    │
+└────────────────┬─────────────────────────────┘
+                 │
+                 ▼
+┌─────────────────────────────────┐
+│       SHAP Explainability       │
+│  Per-prediction feature impact  │
+│  Beeswarm, waterfall, bar plots │
+└─────────────────────────────────┘
+```
+
+### Features Used (v3)
+
+| Category | Features |
+|---|---|
+| Demographics | Age bracket, Gender, Race |
+| Admission Info | Admission type, Discharge disposition, Admission source |
+| Clinical | Time in hospital, Number of diagnoses, Number of lab procedures |
+| Lab Results | A1C result, Max glucose serum |
+| Medications | Insulin, Metformin, and 21 other medication change flags |
+| Diagnosis | Primary ICD-9 code group (diag_1) |
+
+### Target Variable
+
+Binary classification:
+- `1` → Patient **readmitted within 30 days** (high risk)
+- `0` → Not readmitted within 30 days (low risk)
+
+### Model Artifacts
+
+| File | Description |
+|---|---|
+| `diabetes_model_v3.pkl` | Trained soft-voting ensemble classifier |
+| `scaler_v3.pkl` | StandardScaler fitted on training data |
+| `feature_names_v3.json` | Ordered list of input features |
+| `shap_explainer_v3.pkl` | SHAP TreeExplainer for model interpretability |
+
+### Training Scripts
+
+| File | Purpose |
+|---|---|
+| `diabetes_complication_risk_predictor.ipynb` | Full interactive training notebook |
+| `train_uci130.py` | Standalone training script |
+| `data_preprocessing_uci130.py` | UCI-130 specific preprocessing pipeline |
+| `verify_uci130.py` | Dataset integrity and column verification |
+| `requirements_uci130.txt` | Dependencies for v3 training |
 
 ---
 
