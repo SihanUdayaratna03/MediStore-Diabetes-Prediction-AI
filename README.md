@@ -135,7 +135,7 @@ The v2 model was trained using a custom engineered pipeline with SMOTE balancing
 
 ## 🏥 Model v3 — Diabetes Complication Risk Predictor (UCI-130)
 
-A second, independent model trained on the **UCI Diabetes 130-US Hospitals dataset (1999–2008)** with **101,767 real patient records** to predict the risk of early hospital readmission (within 30 days) for diabetic patients.
+A second, independent model trained on the **UCI Diabetes 130-US Hospitals dataset ** with **101,767 real patient records** to predict the risk of early hospital readmission (within 30 days) for diabetic patients.
 
 ### Architecture
 
