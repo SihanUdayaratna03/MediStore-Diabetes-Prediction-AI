@@ -52,10 +52,10 @@ try:
     explainer = joblib.load(os.path.join(BASE_DIR, "shap_explainer_v3.pkl"))
     with open(os.path.join(BASE_DIR, "feature_names_v3.json")) as f:
         feature_names: list[str] = json.load(f)
-    print("✅ v3 model artifacts loaded successfully!")
+    print("[OK] v3 model artifacts loaded successfully!")
     print(f"   Features : {len(feature_names)}")
 except Exception as exc:
-    print(f"❌ Error loading v3 artifacts: {exc}")
+    print(f"[ERROR] Error loading v3 artifacts: {exc}")
     model = scaler = explainer = feature_names = None  # type: ignore[assignment]
 
 
