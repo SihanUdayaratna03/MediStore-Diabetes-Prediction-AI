@@ -1,0 +1,25 @@
+# Diabetes Complications — Clinical Reference
+
+## Microvascular Complications
+- Diabetic Retinopathy: leading cause of new blindness in adults
+  - Annual dilated eye exam recommended
+  - HbA1c control reduces risk by 76%
+- Diabetic Nephropathy: progressive kidney disease
+  - Monitor: ACR (albumin-creatinine ratio) annually
+  - Target: ACR < 30 mg/g
+- Peripheral Neuropathy: affects 50% of diabetic patients
+  - Symptoms: tingling, numbness, pain in feet
+  - Annual foot exam critical
+
+## Macrovascular Complications
+- Cardiovascular disease: 2–4× higher risk in T2D
+  - Aspirin therapy for high-risk patients
+  - Statin therapy: LDL target < 70 mg/dL
+- Stroke risk: increased 2–4× in diabetic patients
+- Peripheral arterial disease: affects 20–30% of T2D patients
+
+## Prevention Strategies
+- Tight glycaemic control (HbA1c < 7%)
+- BP control < 130/80 mmHg
+- Lipid management: statins + lifestyle
+- Regular screening and monitoring

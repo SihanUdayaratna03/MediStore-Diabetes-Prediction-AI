@@ -1,0 +1,31 @@
+# Web framework
+fastapi>=0.115.6
+uvicorn[standard]>=0.32.1
+
+# AI / Agents
+google-generativeai>=0.8.3
+langchain>=0.3.7
+langchain-google-genai>=2.0.5
+langgraph>=0.2.55
+
+# MCP
+mcp>=1.2.0
+
+# Vector DB
+chromadb>=1.0.0
+
+# Embedding
+sentence-transformers>=3.4.0
+
+# ML
+scikit-learn>=1.6.0
+joblib>=1.4.2
+numpy>=2.0.0
+shap>=0.47.0
+
+# Utilities
+python-dotenv>=1.0.1
+pydantic>=2.10.3
+httpx>=0.28.1
+tenacity>=9.0.0
+structlog>=24.4.0
