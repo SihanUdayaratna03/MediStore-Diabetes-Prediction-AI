@@ -1,0 +1,22 @@
+# ADA Diabetes Management Guidelines 2024
+
+## Diagnosis Criteria
+- Fasting plasma glucose ≥ 126 mg/dL (7.0 mmol/L)
+- 2-hour plasma glucose ≥ 200 mg/dL during OGTT
+- HbA1c ≥ 6.5%
+- Random plasma glucose ≥ 200 mg/dL with symptoms
+
+## Blood Glucose Targets
+- Preprandial: 80–130 mg/dL
+- Postprandial (1–2 hr): <180 mg/dL
+- HbA1c target: <7.0% for most adults
+
+## Lifestyle Modifications
+- Weight loss of 5–7% body weight reduces progression by 58%
+- 150 min/week moderate aerobic activity recommended
+- Low glycaemic index diet reduces HbA1c by 0.5%
+
+## Pharmacological Treatment
+- First-line: Metformin (if not contraindicated)
+- Second-line: GLP-1 receptor agonists, SGLT2 inhibitors
+- Insulin therapy for Type 1; may be required in Type 2

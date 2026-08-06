@@ -1,0 +1,20 @@
+# Diabetes Risk Factors — Clinical Reference
+
+## Primary Risk Factors
+- BMI > 25 (overweight) or > 30 (obese) significantly increases T2D risk
+- Age > 45: risk doubles every decade after 40
+- Family history: first-degree relative with T2D
+- Fasting glucose 100–125 mg/dL (prediabetes)
+- Gestational diabetes history
+
+## Metabolic Risk Markers
+- HbA1c 5.7–6.4%: prediabetes range
+- Triglycerides > 150 mg/dL: metabolic syndrome marker
+- HDL < 40 mg/dL (men) or < 50 mg/dL (women)
+- Blood pressure ≥ 130/80 mmHg
+
+## Lifestyle Risk Factors
+- Physical inactivity: 2× increased risk
+- Poor sleep (< 6hr/night): increases insulin resistance
+- Chronic stress: elevates cortisol, raises blood glucose
+- High refined carbohydrate diet: spikes postprandial glucose
