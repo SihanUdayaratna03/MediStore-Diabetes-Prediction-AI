@@ -1,11 +1,32 @@
+"""
+MediStore AI — Streamlit interface for the v2 diabetes risk model.
+
+An alternative UI to the React frontend; both are backed by the same
+`models/v2/` artifacts.
+
+Run from the project root:
+    streamlit run apps/streamlit/app.py
+"""
+
+import sys
+from pathlib import Path
+
+# This script lives outside the `backend` package, so put the project root on
+# sys.path to reuse the single source of truth for artifact locations.
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
 import streamlit as st
 import numpy as np
 import joblib
 import plotly.graph_objects as go
-import base64, os
+import base64
 import json
 import shap
 import matplotlib.pyplot as plt
+
+from backend.config import V2_MODEL, V2_SCALER, V2_EXPLAINER, V2_FEATURES
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -259,10 +280,10 @@ hr { border-color: #e2e8f0 !important; margin: 1.5rem 0 !important; }
 @st.cache_resource
 def load_artifacts():
     try:
-        model = joblib.load("diabetes_model_v2.pkl")
-        scaler = joblib.load("scaler_v2.pkl")
-        explainer = joblib.load("shap_explainer.pkl")
-        with open("feature_names_v2.json") as f:
+        model = joblib.load(V2_MODEL)
+        scaler = joblib.load(V2_SCALER)
+        explainer = joblib.load(V2_EXPLAINER)
+        with open(V2_FEATURES) as f:
             feature_names = json.load(f)
         return model, scaler, explainer, feature_names
     except FileNotFoundError:
@@ -399,7 +420,7 @@ else:
             <div>
               <div style="font-family:'Space Grotesk',sans-serif;font-size:1.1rem;font-weight:700;color:#ff8888;margin-bottom:0.3rem;">Model Files Not Found</div>
               <div style="color:rgba(200,230,228,0.75);font-size:0.9rem;">
-                Ensure <code>diabetes_model_v2.pkl</code>, <code>scaler_v2.pkl</code>, and <code>shap_explainer.pkl</code> exist in the project directory.
+                Ensure <code>diabetes_model_v2.pkl</code>, <code>scaler_v2.pkl</code>, and <code>shap_explainer.pkl</code> exist in <code>models/v2/</code>. Run <code>python -m backend.ml.train_v2</code> to regenerate them.
               </div>
             </div>
           </div>

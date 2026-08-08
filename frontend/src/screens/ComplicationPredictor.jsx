@@ -1,15 +1,15 @@
 import { useState } from 'react'
-import axios from 'axios'
 import {
   Activity, Stethoscope, User, Heart, Pill, FlaskConical,
   Building2, ClipboardList, ChevronDown, AlertOctagon,
 } from 'lucide-react'
-import Sidebar from './components/ui/Sidebar'
-import TopBar from './components/ui/TopBar'
-import { Field, RangeField, NumberField, SelectField } from './components/ui/Field'
-import ResultDashboard from './components/results/ResultDashboard'
-import AnalysingState from './components/results/AnalysingState'
-import Reveal from './components/ui/Reveal'
+import Sidebar from '../components/ui/Sidebar'
+import TopBar from '../components/ui/TopBar'
+import { Field, RangeField, NumberField, SelectField } from '../components/ui/Field'
+import ResultDashboard from '../components/results/ResultDashboard'
+import { predictComplicationRisk } from '../api/api'
+import AnalysingState from '../components/results/AnalysingState'
+import Reveal from '../components/ui/Reveal'
 
 // ─── Option maps ──────────────────────────────────────────────────────────────
 const MED_OPTIONS = [[0, 'No'], [1, 'Steady'], [2, 'Up'], [-1, 'Down']]
@@ -308,10 +308,9 @@ export default function ComplicationPredictor({ onBack }) {
         diag_3:                    parseInt(form.diag_3),
         number_diagnoses:          parseInt(form.number_diagnoses),
       }
-      const res = await axios.post('http://localhost:8001/predict_v3', payload)
-      setResult(res.data)
+      setResult(await predictComplicationRisk(payload))
     } catch (err) {
-      setError('Failed to connect to the complication risk server. Ensure server_v3.py is running on port 8001.')
+      setError('Failed to connect to the complication risk server. Ensure the v3 API is running on port 8001.')
       console.error(err)
     } finally {
       setLoading(false)

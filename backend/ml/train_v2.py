@@ -5,9 +5,11 @@
 ║  Upgrade: SVM (78%) → XGBoost Ensemble (85-88%)          ║
 ╚═══════════════════════════════════════════════════════════╝
 
-Run Command:
-    python train_model.py
+Run from the project root:
+    python -m backend.ml.train_v2
 """
+
+import sys
 
 import pandas as pd
 import numpy as np
@@ -27,6 +29,18 @@ from xgboost import XGBClassifier
 from lightgbm import LGBMClassifier
 import shap
 
+from backend.config import (
+    PIMA_CSV, V2_MODEL, V2_SCALER, V2_EXPLAINER, V2_FEATURES,
+    FIGURES_DIR, ensure_dirs,
+)
+
+ensure_dirs()
+
+# These scripts print emoji status markers; Windows consoles default to cp1252,
+# which cannot encode them and would abort the run mid-way.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
 # ══════════════════════════════════════════════════════════════
 print("=" * 60)
 print("  MediStore AI — Model Upgrade Training v2.5")
@@ -34,7 +48,7 @@ print("=" * 60)
 
 # ── Step 1: Load Data ─────────────────────────────────────────
 print("\n[1/7] 📂 Loading data...")
-df = pd.read_csv('diabetes.csv')
+df = pd.read_csv(PIMA_CSV)
 print(f"      ✅ Loaded: {df.shape[0]} rows × {df.shape[1]} columns")
 print(f"      📊 Class balance: {df['Outcome'].value_counts().to_dict()}")
 
@@ -84,7 +98,7 @@ print("\n[5/7] 📏 Scaling features...")
 scaler = StandardScaler()
 X_train_s = scaler.fit_transform(X_train_bal)
 X_test_s  = scaler.transform(X_test)
-joblib.dump(scaler, 'scaler_v2.pkl')
+joblib.dump(scaler, V2_SCALER)
 print("      ✅ Scaler saved: scaler_v2.pkl")
 
 # ── Step 6: Train Ensemble Model ─────────────────────────────
@@ -169,18 +183,18 @@ shap.summary_plot(
 )
 plt.title("MediStore AI — Feature Importance (SHAP)", fontsize=13, pad=15)
 plt.tight_layout()
-plt.savefig('shap_feature_importance.png', dpi=150, bbox_inches='tight',
+plt.savefig(FIGURES_DIR / 'shap_feature_importance.png', dpi=150, bbox_inches='tight',
             facecolor='white')
 plt.close()
 
 # Save SHAP explainer
-joblib.dump(explainer, 'shap_explainer.pkl')
+joblib.dump(explainer, V2_EXPLAINER)
 print("      ✅ SHAP explainer saved: shap_explainer.pkl")
 print("      ✅ SHAP plot saved:      shap_feature_importance.png")
 
 # ── Save Model & Feature Names ────────────────────────────
-joblib.dump(ensemble, 'diabetes_model_v2.pkl')
-with open('feature_names_v2.json', 'w') as f:
+joblib.dump(ensemble, V2_MODEL)
+with open(V2_FEATURES, 'w') as f:
     json.dump(feature_cols, f, indent=2)
 
 # ── Final Summary ─────────────────────────────────────────
@@ -192,11 +206,11 @@ print(f"  📈 AUC-ROC   : {auc_roc:.4f}")
 print(f"  📦 Features  : {len(feature_cols)}")
 print()
 print("  📁 Files Created:")
-print("     diabetes_model_v2.pkl      ← New model")
-print("     scaler_v2.pkl              ← New scaler")
-print("     shap_explainer.pkl         ← SHAP explainer")
-print("     feature_names_v2.json      ← Feature list")
-print("     shap_feature_importance.png ← SHAP chart")
+print("     models/v2/diabetes_model_v2.pkl       ← New model")
+print("     models/v2/scaler_v2.pkl               ← New scaler")
+print("     models/v2/shap_explainer.pkl          ← SHAP explainer")
+print("     models/v2/feature_names_v2.json       ← Feature list")
+print("     reports/figures/shap_feature_importance.png ← SHAP chart")
 print()
 print("  ✅ ඊළඟ Step:")
 print("     app.py හි diabetes_model_v2.pkl use කරන්න")

@@ -1,6 +1,19 @@
+# Python
 venv/
+.venv/
 __pycache__/
+*.py[cod]
 .ipynb_checkpoints/
-*.ipynb
+
+# Not needed in the backend image
+notebooks/
+reports/
+assets/
+frontend/
+apps/
+scripts/
+data/chroma_db/
+
+# VCS & secrets
 .git/
 .env

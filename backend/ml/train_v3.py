@@ -7,20 +7,21 @@
 ╚═══════════════════════════════════════════════════════════════╝
 
 BEFORE RUNNING:
-  1. Place 'diabetic_data.csv' in this directory
+  1. Place 'diabetic_data.csv' in data/raw/
      Download from: https://archive.ics.uci.edu/dataset/296/
   2. Install dependencies:
      pip install -r requirements_uci130.txt
 
-Run Command:
-    python train_uci130.py
+Run from the project root:
+    python -m backend.ml.train_v3
 
     Or specify a different CSV path:
-    python train_uci130.py --csv path/to/diabetic_data.csv
+    python -m backend.ml.train_v3 --csv path/to/diabetic_data.csv
 """
 
 import argparse
 import json
+import sys
 import warnings
 
 import joblib
@@ -41,8 +42,18 @@ from sklearn.preprocessing import StandardScaler
 from xgboost import XGBClassifier
 from lightgbm import LGBMClassifier
 
-# Import our preprocessing module (must be in the same directory)
-from data_preprocessing_uci130 import preprocess
+from backend.config import (
+    UCI130_CSV, V3_MODEL, V3_SCALER, V3_EXPLAINER, V3_FEATURES,
+    FIGURES_DIR, ensure_dirs,
+)
+from backend.ml.preprocessing_uci130 import preprocess
+
+ensure_dirs()
+
+# These scripts print emoji status markers; Windows consoles default to cp1252,
+# which cannot encode them and would abort the run mid-way.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 warnings.filterwarnings("ignore")
 
@@ -50,8 +61,8 @@ warnings.filterwarnings("ignore")
 parser = argparse.ArgumentParser(description="Train MediStore UCI-130 model v3")
 parser.add_argument(
     "--csv",
-    default="diabetic_data.csv",
-    help="Path to the UCI-130 CSV file (default: diabetic_data.csv)",
+    default=str(UCI130_CSV),
+    help="Path to the UCI-130 CSV file (default: data/raw/diabetic_data.csv)",
 )
 args = parser.parse_args()
 
@@ -90,7 +101,7 @@ print("\n[4/7] 📏 Scaling features (StandardScaler)...")
 scaler = StandardScaler()
 X_train_s = scaler.fit_transform(X_train_bal)
 X_test_s  = scaler.transform(X_test)
-joblib.dump(scaler, "scaler_v3.pkl")
+joblib.dump(scaler, V3_SCALER)
 print("      ✅ Scaler saved: scaler_v3.pkl")
 
 # ── Step 5: Build & Train Ensemble ────────────────────────────────────────────
@@ -215,18 +226,18 @@ shap.summary_plot(
 )
 plt.title("MediStore AI — Feature Importance (SHAP, UCI-130 v3)", fontsize=14, pad=15)
 plt.tight_layout()
-plt.savefig("shap_feature_importance_v3.png", dpi=150, bbox_inches="tight", facecolor="white")
+plt.savefig(FIGURES_DIR / "shap_feature_importance_v3.png", dpi=150, bbox_inches="tight", facecolor="white")
 plt.close()
 print("      ✅ SHAP chart saved    : shap_feature_importance_v3.png")
 
-joblib.dump(explainer, "shap_explainer_v3.pkl")
+joblib.dump(explainer, V3_EXPLAINER)
 print("      ✅ SHAP explainer saved: shap_explainer_v3.pkl")
 
 # ── Save Main Model & Feature Names ──────────────────────────────────────────
-joblib.dump(ensemble, "diabetes_model_v3.pkl")
+joblib.dump(ensemble, V3_MODEL)
 print("      ✅ Model saved         : diabetes_model_v3.pkl")
 
-with open("feature_names_v3.json", "w") as f:
+with open(V3_FEATURES, "w") as f:
     json.dump(feature_cols, f, indent=2)
 print("      ✅ Feature list saved  : feature_names_v3.json")
 
@@ -241,11 +252,11 @@ print(f"  📦 Features used    : {len(feature_cols)}")
 print(f"  📦 Training rows    : {len(X_train_bal):,} (after SMOTE)")
 print()
 print("  📁 Output Files Created:")
-print("     diabetes_model_v3.pkl           ← Main prediction model")
-print("     scaler_v3.pkl                   ← Feature scaler")
-print("     shap_explainer_v3.pkl           ← SHAP explainability model")
-print("     feature_names_v3.json           ← Feature column list")
-print("     shap_feature_importance_v3.png  ← Feature importance chart")
+print("     models/v3/diabetes_model_v3.pkl            ← Main prediction model")
+print("     models/v3/scaler_v3.pkl                    ← Feature scaler")
+print("     models/v3/shap_explainer_v3.pkl            ← SHAP explainability model")
+print("     models/v3/feature_names_v3.json            ← Feature column list")
+print("     reports/figures/shap_feature_importance_v3.png ← Feature importance chart")
 print()
 print("  ✅ Next Steps:")
 print("     1. Run: python verify_uci130.py")

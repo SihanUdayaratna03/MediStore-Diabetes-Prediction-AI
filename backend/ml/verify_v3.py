@@ -1,11 +1,11 @@
 """
-verify_uci130.py
+verify_v3.py
 ─────────────────────────────────────────────────────────────────
 Sanity-check script: loads all v3 model artifacts and runs a
 test prediction to confirm everything works end-to-end.
 
-Run AFTER training:
-    python verify_uci130.py
+Run from the project root AFTER training:
+    python -m backend.ml.verify_v3
 ─────────────────────────────────────────────────────────────────
 """
 
@@ -13,6 +13,13 @@ import json
 import sys
 import numpy as np
 import joblib
+
+from backend.config import V3_MODEL, V3_SCALER, V3_EXPLAINER, V3_FEATURES
+
+# These scripts print emoji status markers; Windows consoles default to cp1252,
+# which cannot encode them and would abort the run mid-way.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
 print("=" * 55)
 print("  MediStore AI — v3 Artifact Verification")
@@ -23,10 +30,10 @@ all_ok = True
 # ── Load artifacts ─────────────────────────────────────────────
 print("\n[1] Loading model artifacts...")
 try:
-    model         = joblib.load("diabetes_model_v3.pkl")
-    scaler        = joblib.load("scaler_v3.pkl")
-    explainer     = joblib.load("shap_explainer_v3.pkl")
-    with open("feature_names_v3.json") as f:
+    model         = joblib.load(V3_MODEL)
+    scaler        = joblib.load(V3_SCALER)
+    explainer     = joblib.load(V3_EXPLAINER)
+    with open(V3_FEATURES) as f:
         feature_names = json.load(f)
     print(f"  ✅ model           : diabetes_model_v3.pkl")
     print(f"  ✅ scaler          : scaler_v3.pkl")
@@ -34,7 +41,7 @@ try:
     print(f"  ✅ feature list    : feature_names_v3.json ({len(feature_names)} features)")
 except FileNotFoundError as e:
     print(f"  ❌ Missing file: {e}")
-    print("  → Run 'python train_uci130.py' first to generate all artifacts.")
+    print("  → Run 'python -m backend.ml.train_v3' first to generate all artifacts.")
     sys.exit(1)
 
 # ── Test prediction ─────────────────────────────────────────────

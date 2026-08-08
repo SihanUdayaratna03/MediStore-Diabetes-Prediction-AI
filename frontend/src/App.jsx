@@ -8,7 +8,7 @@ import './App.css'
 
 // The v3 module is the heavier of the two (52 fields, a large option map), and
 // most sessions never open it — so it is split out and fetched on demand.
-const ComplicationPredictor = lazy(() => import('./ComplicationPredictor'))
+const ComplicationPredictor = lazy(() => import('./screens/ComplicationPredictor'))
 
 function ScreenFallback() {
   return (

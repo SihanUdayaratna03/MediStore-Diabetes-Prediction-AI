@@ -9,16 +9,13 @@ Target : Early hospital readmission (<30 days) — proxy for poor glycaemic
 Port   : 8001  (v2 SVM model runs on 8000)
 ────────────────────────────────────────────────────────────────────────────
 
-Run with:
-    python server_v3.py
-    # or
-    uvicorn server_v3:app --port 8001 --reload
+Run from the project root with:
+    uvicorn backend.api.v3_server:app --port 8001 --reload
 """
 
 import base64
 import io
 import json
-import os
 
 import joblib
 import matplotlib
@@ -32,6 +29,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+from backend.config import V3_MODEL, V3_SCALER, V3_EXPLAINER, V3_FEATURES
+
 # ── App setup ──────────────────────────────────────────────────────────────────
 app = FastAPI(title="MediStore AI — Complication Risk Predictor (v3)")
 
@@ -44,13 +43,11 @@ app.add_middleware(
 )
 
 # ── Load artifacts ─────────────────────────────────────────────────────────────
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
 try:
-    model    = joblib.load(os.path.join(BASE_DIR, "diabetes_model_v3.pkl"))
-    scaler   = joblib.load(os.path.join(BASE_DIR, "scaler_v3.pkl"))
-    explainer = joblib.load(os.path.join(BASE_DIR, "shap_explainer_v3.pkl"))
-    with open(os.path.join(BASE_DIR, "feature_names_v3.json")) as f:
+    model     = joblib.load(V3_MODEL)
+    scaler    = joblib.load(V3_SCALER)
+    explainer = joblib.load(V3_EXPLAINER)
+    with open(V3_FEATURES) as f:
         feature_names: list[str] = json.load(f)
     print("[OK] v3 model artifacts loaded successfully!")
     print(f"   Features : {len(feature_names)}")
@@ -125,7 +122,7 @@ class ComplicationInput(BaseModel):
 def build_feature_vector(d: ComplicationInput) -> np.ndarray:
     """
     Reconstruct the exact feature order expected by the v3 model.
-    Matches feature_names_v3.json and engineer_features() in data_preprocessing_uci130.py.
+    Matches feature_names_v3.json and engineer_features() in backend/ml/preprocessing_uci130.py.
     """
     # Engineered features
     med_procedure_ratio = d.num_medications / (d.num_procedures + 1)
@@ -246,4 +243,4 @@ def predict_v3(data: ComplicationInput):
 # ── Entry point ────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("server_v3:app", host="0.0.0.0", port=8001, reload=True)
+    uvicorn.run("backend.api.v3_server:app", host="0.0.0.0", port=8001, reload=True)
