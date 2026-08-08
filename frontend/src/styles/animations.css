@@ -1,0 +1,136 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   MediStore AI — Motion library
+   Keyframes and reusable motion utilities. Everything here is composited on
+   transform/opacity only, so it stays on the GPU and off the main thread.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Entrance animations use `animation-fill-mode: backwards`, never `both`.
+   With `both`, the final keyframe stays applied forever — and a transform
+   value, even `none`, resolves to an identity matrix that turns the element
+   into a containing block for fixed/sticky descendants and pins a composited
+   layer in memory. `backwards` pre-applies the first frame (so there is no
+   flash before the delay elapses) and then releases to the base style, which
+   already has no transform. */
+@keyframes ms-rise {
+  from { opacity: 0; transform: translate3d(0, 22px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes ms-rise-3d {
+  from { opacity: 0; transform: perspective(1200px) translate3d(0, 28px, -60px) rotateX(6deg); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes ms-fade { from { opacity: 0; } to { opacity: 1; } }
+
+@keyframes ms-scale-in {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes ms-exit-back {
+  from { opacity: 1; transform: perspective(1200px) translate3d(0, 0, 0) scale(1); }
+  to   { opacity: 0; transform: perspective(1200px) translate3d(0, -14px, -80px) scale(0.97); }
+}
+
+@keyframes ms-spin { to { transform: rotate(360deg); } }
+
+@keyframes ms-float {
+  0%, 100% { transform: translate3d(0, calc(-6px * var(--motion-scale)), 0); }
+  50%      { transform: translate3d(0, calc(6px * var(--motion-scale)), 0); }
+}
+
+@keyframes ms-pulse-ring {
+  0%   { opacity: 0.55; transform: scale(0.86); }
+  70%  { opacity: 0;    transform: scale(1.35); }
+  100% { opacity: 0;    transform: scale(1.35); }
+}
+
+@keyframes ms-shimmer {
+  from { transform: translateX(-120%); }
+  to   { transform: translateX(220%); }
+}
+
+@keyframes ms-sweep {
+  from { background-position: 200% 0; }
+  to   { background-position: -200% 0; }
+}
+
+@keyframes ms-orb-drift {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  33%  { transform: translate3d(calc(4vw * var(--motion-scale)), calc(-3vh * var(--motion-scale)), 0) scale(1.08); }
+  66%  { transform: translate3d(calc(-3vw * var(--motion-scale)), calc(4vh * var(--motion-scale)), 0) scale(0.95); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes ms-scan {
+  0%   { transform: translateY(-100%); opacity: 0; }
+  12%  { opacity: 0.7; }
+  88%  { opacity: 0.7; }
+  100% { transform: translateY(1200%); opacity: 0; }
+}
+
+@keyframes ms-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* ── Utilities ─────────────────────────────────────────────────────────── */
+
+.fade-in-up {
+  animation: ms-rise var(--dur-slow) var(--ease-out) backwards;
+}
+
+.ms-rise-3d {
+  animation: ms-rise-3d var(--dur-page) var(--ease-out) backwards;
+}
+
+.ms-fade-in {
+  animation: ms-fade var(--dur-base) var(--ease-out) backwards;
+}
+
+.ms-float {
+  animation: ms-float 7s var(--ease-in-out) infinite;
+}
+
+/* Staggered children. `--i` is set inline per item; the reveal is capped so a
+   long list never leaves the last item waiting seconds to appear. */
+.ms-stagger > * {
+  animation: ms-rise var(--dur-slow) var(--ease-out) backwards;
+  animation-delay: calc(min(var(--i, 0) * 55ms, 520ms));
+}
+
+/* Scroll-triggered reveal, driven by Reveal.jsx */
+.ms-reveal {
+  opacity: 0;
+  transform: translate3d(0, calc(24px * var(--motion-scale)), 0);
+  transition:
+    opacity var(--dur-slow) var(--ease-out),
+    transform var(--dur-slow) var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.ms-reveal[data-visible='true'] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Loading skeleton */
+.ms-skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--glass-inset);
+  border-radius: var(--r-md);
+}
+
+.ms-skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.07),
+    transparent
+  );
+  animation: ms-shimmer 1.6s var(--ease-in-out) infinite;
+}

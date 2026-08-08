@@ -1,0 +1,148 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   MediStore AI — Design Tokens
+   The single source of truth for colour, depth, motion and spacing.
+   Brand palette is unchanged: midnight navy ground, sky-blue (v2) and
+   violet (v3) module accents. Everything below is derived from those.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* ── Ground ──────────────────────────────────────────────────────────── */
+  --bg-dark: #020617;
+  --bg-deep: #01030d;
+  --surface-chart: #0d1526;      /* the surface charts are validated against */
+
+  /* ── Brand accents (unchanged) ───────────────────────────────────────── */
+  --accent: #38bdf8;             /* sky — legacy alias, kept for compatibility */
+  --sky-100: #e0f2fe;
+  --sky-300: #7dd3fc;
+  --sky-400: #38bdf8;
+  --sky-500: #0ea5e9;
+  --sky-600: #0284c7;
+  --sky-700: #0369a1;
+
+  --violet-200: #ddd6fe;
+  --violet-300: #c4b5fd;
+  --violet-400: #a78bfa;
+  --violet-500: #8b5cf6;
+  --violet-600: #7c3aed;
+  --violet-700: #6d28d9;
+
+  /* ── Status palette ──────────────────────────────────────────────────────
+     Validated against --surface-chart. These are RESERVED for clinical state
+     and are never reused as generic series colours. Every use of a status
+     colour is paired with an icon and a text label — never colour alone.
+     `warn` is yellow-500 rather than amber-500: it clears the red/amber
+     colour-vision-deficiency collision (ΔE 16.3 vs 4.4 deutan).            */
+  --status-critical: #ef4444;
+  --status-critical-soft: #fca5a5;
+  --status-warn: #eab308;
+  --status-warn-soft: #fde047;
+  --status-good: #059669;
+  --status-good-soft: #6ee7b7;
+
+  /* ── Diverging pair (risk ↔ protective) — fully validated ────────────── */
+  --diverge-risk: #ef4444;
+  --diverge-protective: #0284c7;
+  --diverge-mid: #64748b;
+
+  /* ── Ink ─────────────────────────────────────────────────────────────── */
+  --text-main: #f8fafc;
+  --text-muted: #cbd5e1;
+  --text-dim: #94a3b8;
+  --text-faint: rgba(226, 232, 240, 0.55);
+
+  /* ── Glass surfaces — three depth tiers ──────────────────────────────────
+     On a near-black ground, glass has to sit *above* the backdrop in
+     lightness or it reads as a hole rather than a floating pane. Each tier is
+     a lifted slate, and recessed elements go darker than the ground.        */
+  --panel-bg: rgba(30, 41, 59, 0.62);
+  --glass-1: rgba(38, 50, 71, 0.6);    /* floating, nearest the viewer */
+  --glass-2: rgba(30, 41, 59, 0.62);   /* default panel */
+  --glass-3: rgba(14, 22, 40, 0.82);   /* recessed / sidebar */
+  --glass-inset: rgba(2, 6, 23, 0.5);  /* wells cut into a panel */
+
+  --panel-border: rgba(148, 163, 184, 0.26);
+  --border-soft: rgba(148, 163, 184, 0.16);
+  --border-strong: rgba(148, 163, 184, 0.36);
+
+  /* Specular top edge that sells the "lit glass" look */
+  --edge-light: rgba(255, 255, 255, 0.14);
+
+  --glass-blur: blur(20px);
+  --blur-sm: blur(10px);
+  --blur-md: blur(20px);
+  --blur-lg: blur(36px);
+
+  /* ── Elevation — layered, tinted, never a flat black blob ────────────── */
+  --shadow-1: 0 1px 2px rgba(2, 6, 23, 0.4), 0 2px 8px rgba(2, 6, 23, 0.28);
+  --shadow-2: 0 2px 6px rgba(2, 6, 23, 0.42), 0 12px 32px rgba(2, 6, 23, 0.42);
+  --shadow-3: 0 4px 12px rgba(2, 6, 23, 0.48), 0 24px 64px rgba(2, 6, 23, 0.55);
+  --shadow-lift: 0 8px 20px rgba(2, 6, 23, 0.5), 0 32px 80px rgba(2, 6, 23, 0.6);
+  --glow-sky: 0 0 0 1px rgba(56, 189, 248, 0.28), 0 18px 50px rgba(2, 132, 199, 0.28);
+  --glow-violet: 0 0 0 1px rgba(167, 139, 250, 0.28), 0 18px 50px rgba(124, 58, 237, 0.28);
+
+  /* ── Radii ───────────────────────────────────────────────────────────── */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 24px;
+  --r-pill: 999px;
+
+  /* ── Spacing scale ───────────────────────────────────────────────────── */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.5rem;
+  --sp-6: 2rem;
+  --sp-7: 3rem;
+
+  /* ── Type ────────────────────────────────────────────────────────────── */
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+
+  /* ── Motion ──────────────────────────────────────────────────────────── */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 150ms;
+  --dur-base: 260ms;
+  --dur-slow: 520ms;
+  --dur-page: 620ms;
+
+  /* Every transform-based flourish multiplies by this. Reduced-motion sets
+     it to 0, which neutralises tilt, parallax and float in one place. */
+  --motion-scale: 1;
+
+  /* ── Layering ────────────────────────────────────────────────────────── */
+  --z-bg: 0;
+  --z-content: 1;
+  --z-sidebar: 20;
+  --z-topbar: 30;
+  --z-overlay: 60;
+
+  color-scheme: dark;
+}
+
+/* Honour the OS "reduce motion" setting globally. Individual components read
+   --motion-scale so they degrade to a static — but still complete — design. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-scale: 0;
+    --dur-fast: 1ms;
+    --dur-base: 1ms;
+    --dur-slow: 1ms;
+    --dur-page: 1ms;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
