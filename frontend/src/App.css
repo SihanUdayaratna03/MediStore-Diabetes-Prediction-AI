@@ -1350,9 +1350,6 @@ select.input-field {
   width: 100%;
   perspective: 1400px;
 }
-<<<<<<< Updated upstream
-@keyframes spin { to { transform: rotate(360deg); } }
-=======
 
 .mode-card {
   appearance: none;
@@ -1650,4 +1647,3 @@ select.input-field {
   }
   .ms-shap img { filter: none !important; }
 }
->>>>>>> Stashed changes
