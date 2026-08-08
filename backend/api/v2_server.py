@@ -1,4 +1,3 @@
-import os
 import io
 import base64
 import json
@@ -13,6 +12,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+from backend.config import V2_MODEL, V2_SCALER, V2_EXPLAINER, V2_FEATURES
+
 app = FastAPI(title="MediStore AI API")
 
 # Enable CORS for React frontend
@@ -26,14 +27,14 @@ app.add_middleware(
 
 # Load Models
 try:
-    model = joblib.load("diabetes_model_v2.pkl")
-    scaler = joblib.load("scaler_v2.pkl")
-    explainer = joblib.load("shap_explainer.pkl")
-    with open("feature_names_v2.json") as f:
+    model = joblib.load(V2_MODEL)
+    scaler = joblib.load(V2_SCALER)
+    explainer = joblib.load(V2_EXPLAINER)
+    with open(V2_FEATURES) as f:
         feature_names = json.load(f)
-    print("✅ Models and artifacts loaded successfully!")
+    print("[OK] v2 model artifacts loaded successfully!")
 except Exception as e:
-    print(f"❌ Error loading models: {e}")
+    print(f"[ERROR] Error loading v2 artifacts: {e}")
     model, scaler, explainer, feature_names = None, None, None, None
 
 

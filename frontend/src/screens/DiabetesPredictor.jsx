@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import axios from 'axios'
 import { Stethoscope, Droplet, Heart, User, Activity, AlertOctagon } from 'lucide-react'
 import Sidebar from '../components/ui/Sidebar'
 import TopBar from '../components/ui/TopBar'
@@ -7,6 +6,7 @@ import { RangeField, NumberField } from '../components/ui/Field'
 import ResultDashboard from '../components/results/ResultDashboard'
 import AnalysingState from '../components/results/AnalysingState'
 import Reveal from '../components/ui/Reveal'
+import { predictDiabetesRisk } from '../api/api'
 
 const INITIAL_FORM = {
   pregnancies: 0,
@@ -58,8 +58,7 @@ export default function DiabetesPredictor({ onBack }) {
     setLoading(true)
     setError(null)
     try {
-      const res = await axios.post('http://localhost:8000/predict', formData)
-      setResult(res.data)
+      setResult(await predictDiabetesRisk(formData))
     } catch (err) {
       setError('Failed to connect to the prediction server. Ensure FastAPI is running on port 8000.')
       console.error(err)

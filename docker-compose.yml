@@ -7,14 +7,15 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: medistore_backend_v2
-    # Start the FastAPI server using Uvicorn
-    command: uvicorn server:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn backend.api.v2_server:app --host 0.0.0.0 --port 8000 --reload
     ports:
       - "8000:8000"
     volumes:
-      # This maps your local root folder to the container's /app folder
-      # so changes to server.py reflect immediately without rebuilding
-      - .:/app
+      # Live-reload the backend package; models/ and data/ are baked into the
+      # image by the Dockerfile and mounted read-only so they can't be modified.
+      - ./backend:/app/backend
+      - ./models:/app/models:ro
+      - ./data:/app/data
     environment:
       - PYTHONUNBUFFERED=1 # Ensures Python print statements show up immediately in logs
 
@@ -26,11 +27,13 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: medistore_backend_v3
-    command: uvicorn server_v3:app --host 0.0.0.0 --port 8001 --reload
+    command: uvicorn backend.api.v3_server:app --host 0.0.0.0 --port 8001 --reload
     ports:
       - "8001:8001"
     volumes:
-      - .:/app
+      - ./backend:/app/backend
+      - ./models:/app/models:ro
+      - ./data:/app/data
     environment:
       - PYTHONUNBUFFERED=1
 
@@ -44,6 +47,9 @@ services:
     container_name: medistore_frontend
     ports:
       - "5173:5173"
+    depends_on:
+      - backend-v2
+      - backend-v3
     volumes:
       # Maps local frontend code to container so live-reload works
       - ./frontend:/app

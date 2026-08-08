@@ -6,10 +6,11 @@ from typing import List, Dict
 import chromadb
 from chromadb.utils import embedding_functions
 
-# Paths 
-ROOT     = Path(__file__).resolve().parents[2]
+from backend.config import CHROMA_DB_DIR
+
+# Paths
 RAW_DOCS = Path(__file__).resolve().parent / "raw_docs"
-DB_PATH  = str(ROOT / "data" / "chroma_db")
+DB_PATH  = str(CHROMA_DB_DIR)
 
 
 # Chunking

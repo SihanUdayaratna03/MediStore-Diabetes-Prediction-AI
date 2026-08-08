@@ -3,13 +3,13 @@ Reusable ChromaDB wrapper for the RAG pipeline.
 Supports semantic search with configurable embedding model.
 """
 
-from pathlib import Path
 import chromadb
 from chromadb.utils import embedding_functions
 
 
-ROOT    = Path(__file__).resolve().parents[2]
-DB_PATH = str(ROOT / "data" / "chroma_db")
+from backend.config import CHROMA_DB_DIR
+
+DB_PATH = str(CHROMA_DB_DIR)
 
 
 class MedicalVectorStore:

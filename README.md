@@ -79,45 +79,111 @@ graph TD
 
 ---
 
+## 📁 Project Structure
+
+```
+.
+├── apps/streamlit/app.py        # Alternative Streamlit UI for the v2 model
+├── backend/
+│   ├── config.py                # Single source of truth for all artifact paths
+│   ├── api/
+│   │   ├── v2_server.py         # FastAPI · diabetes risk        · port 8000
+│   │   └── v3_server.py         # FastAPI · complication risk    · port 8001
+│   ├── ml/
+│   │   ├── preprocessing_uci130.py
+│   │   ├── train_v2.py          # Trains the v2 (PIMA) ensemble
+│   │   ├── train_v3.py          # Trains the v3 (UCI-130) ensemble
+│   │   └── verify_v3.py         # Sanity-checks the v3 artifacts
+│   ├── rag/                     # Retrieval-augmented generation pipeline
+│   └── data_ingestion/          # ChromaDB ingestion + raw_docs/ corpus
+├── data/raw/                    # diabetes.csv, diabetic_data.csv
+├── models/{v2,v3,legacy}/       # Trained .pkl artifacts + feature lists
+├── notebooks/                   # Training / EDA notebooks
+├── reports/figures/             # Generated EDA & SHAP plots
+├── assets/images/               # Design assets
+├── frontend/                    # React + Vite app
+├── mcp_servers/                 # MCP stdio servers
+└── scripts/start.ps1            # Starts both APIs + the frontend
+```
+
+All Python entry points are run as modules **from the project root**, so paths
+resolve identically regardless of where you launch them.
+
+---
+
 ## 💻 Local Setup & Installation
 
-Follow these steps to run the new dual-architecture MediStore AI locally on your machine.
+### Quick start (Windows)
 
-### 1. Start the Python Backend (FastAPI)
-The backend handles the machine learning inference and runs on port `8000`.
+```powershell
+.\scripts\start.ps1
+```
 
-Open your terminal and run:
+Starts both APIs and the frontend in separate windows. Or with Docker:
+
 ```bash
-# Activate the virtual environment
+docker compose up --build
+```
+
+### Manual setup
+
+**1. Install dependencies**
+
+```bash
 # On Windows:
 .\venv\Scripts\activate
 # On macOS/Linux:
 # source venv/bin/activate
 
-# Install any missing backend dependencies (if needed)
-pip install fastapi uvicorn xgboost shap matplotlib
-
-# Start the FastAPI server
-uvicorn server:app --reload --port 8000
+pip install -r requirements.txt          # API + Streamlit runtime
+pip install -r requirements_uci130.txt   # v3 training / SHAP
+pip install -r requirements_rag.txt      # optional: RAG + MCP stack
 ```
-The API is now running at `http://localhost:8000`.
 
-### 2. Start the React Frontend (Vite)
-The frontend serves the UI and runs on port `5173`.
+**2. Start the backends** — run each from the **project root**:
 
-Open a **new, separate terminal** and run:
 ```bash
-# Navigate to the frontend directory
+uvicorn backend.api.v2_server:app --reload --port 8000   # diabetes risk
+uvicorn backend.api.v3_server:app --reload --port 8001   # complication risk
+```
+
+**3. Start the React frontend**
+
+```bash
 cd frontend
-
-# Install Node modules (first time only)
-npm install
-
-# Start the development server
+npm install     # first time only
 npm run dev
 ```
 
-The application will now be live in your browser at **`http://localhost:5173`**.
+The app is live at **`http://localhost:5173`**.
+
+The frontend reads its API base URLs from `VITE_API_V2_URL` / `VITE_API_V3_URL`,
+defaulting to the localhost ports above.
+
+### Optional: Streamlit UI
+
+```bash
+streamlit run apps/streamlit/app.py
+```
+
+### Optional: RAG knowledge base
+
+```bash
+cp .env.example .env    # then add your GOOGLE_API_KEY
+python -m backend.data_ingestion.ingest
+```
+
+---
+
+## 🔄 Retraining
+
+```bash
+python -m backend.ml.train_v2   # → models/v2/
+python -m backend.ml.train_v3   # → models/v3/
+python -m backend.ml.verify_v3  # sanity-check the v3 artifacts
+```
+
+Plots are written to `reports/figures/`.
 
 ---
 
@@ -199,19 +265,19 @@ Binary classification:
 
 | File | Description |
 |---|---|
-| `diabetes_model_v3.pkl` | Trained soft-voting ensemble classifier |
-| `scaler_v3.pkl` | StandardScaler fitted on training data |
-| `feature_names_v3.json` | Ordered list of input features |
-| `shap_explainer_v3.pkl` | SHAP TreeExplainer for model interpretability |
+| `models/v3/diabetes_model_v3.pkl` | Trained soft-voting ensemble classifier |
+| `models/v3/scaler_v3.pkl` | StandardScaler fitted on training data |
+| `models/v3/feature_names_v3.json` | Ordered list of input features |
+| `models/v3/shap_explainer_v3.pkl` | SHAP TreeExplainer for model interpretability |
 
 ### Training Scripts
 
 | File | Purpose |
 |---|---|
-| `diabetes_complication_risk_predictor.ipynb` | Full interactive training notebook |
-| `train_uci130.py` | Standalone training script |
-| `data_preprocessing_uci130.py` | UCI-130 specific preprocessing pipeline |
-| `verify_uci130.py` | Dataset integrity and column verification |
+| `notebooks/diabetes_complication_risk_predictor.ipynb` | Full interactive training notebook |
+| `backend/ml/train_v3.py` | Standalone training script |
+| `backend/ml/preprocessing_uci130.py` | UCI-130 specific preprocessing pipeline |
+| `backend/ml/verify_v3.py` | Artifact integrity and prediction verification |
 | `requirements_uci130.txt` | Dependencies for v3 training |
 
 ---

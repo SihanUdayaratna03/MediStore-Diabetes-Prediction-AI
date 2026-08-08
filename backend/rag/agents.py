@@ -1,10 +1,10 @@
 import os
 import sys
-from pathlib import Path
 from dotenv import load_dotenv 
 import google.generativeai as genai 
 from mcp import ClientSession
 from mcp.client.stdio import stdio_client, StdioServerParameters 
+from backend.config import MCP_SERVERS_DIR
 from backend.rag.prompts import ANALYST_AGENT_PROMPT
 
 #Setup
@@ -14,9 +14,7 @@ genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
 PYTHON = sys.executable
 
-ROOT = Path(__file__).resolve().parents[2]
-
-KNOWLEDGE_MCP_SERVER = str(ROOT / "mcp_servers" / "knowledge_mcp" / "server.py")
+KNOWLEDGE_MCP_SERVER = str(MCP_SERVERS_DIR / "knowledge_mcp" / "server.py")
 
 # Retriever Agent 
 
