@@ -1,8 +1,10 @@
 numpy
 pandas
-scikit-learn
+scikit-learn==1.9.0
 matplotlib
 seaborn
 plotly
 joblib
 streamlit
+fastapi
+uvicorn

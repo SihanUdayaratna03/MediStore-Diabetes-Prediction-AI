@@ -1,0 +1,22 @@
+# Insulin Therapy Guidelines
+
+## When to Initiate Insulin
+- Type 1 Diabetes: required from diagnosis
+- Type 2: HbA1c > 10%, or failure of 2–3 oral agents
+- Acute illness or hospitalisation requiring immediate control
+
+## Insulin Types
+- Rapid-acting (Aspart, Lispro): onset 15 min, peak 1–2hr
+- Short-acting (Regular): onset 30–60 min, peak 2–4hr
+- Intermediate (NPH): onset 2–4hr, peak 4–12hr
+- Long-acting (Glargine, Detemir): onset 2–4hr, no peak
+- Ultra-long (Degludec): 42hr duration, minimal variability
+
+## Starting Doses
+- Basal insulin: 10 units/day or 0.1–0.2 units/kg/day
+- Titrate: increase by 2 units every 3 days until fasting BG < 130 mg/dL
+
+## Hypoglycaemia Management
+- Mild/moderate: 15g fast-acting carbohydrate (glucose tablets)
+- Severe: glucagon injection or IV dextrose
+- Target: avoid BG < 70 mg/dL (3.9 mmol/L)
