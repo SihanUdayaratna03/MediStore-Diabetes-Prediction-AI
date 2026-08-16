@@ -1,43 +1,38 @@
 """
-FastAPI application factory for the MediStore Multi-Agent RAG backend.
-
-Creates the FastAPI app, registers middleware, and mounts API routes.
-Imported by backend/main.py for the uvicorn entry point.
+FastAPI application factory for the MediStore Multi-Agent RAG backend (v2).
 """
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
+from pathlib import Path
 
 from backend.app.api.routes import router as api_router
+from backend.config import UPLOADS_DIR, ensure_upload_dirs
 
 
 def create_app() -> FastAPI:
-    """
-    Constructs and configures the FastAPI application instance.
+    ensure_upload_dirs()
 
-    Returns:
-        A fully configured FastAPI app ready to serve.
-    """
     app = FastAPI(
-        title="MediStore AI — Multi-Agent RAG API",
+        title="MediStore AI — Multi-Agent RAG API v2",
         description=(
-            "Multi-Agent RAG API for the MediStore Diabetes Prediction System.\n"
-            "Powered by LangGraph, Google Gemini 1.5 Flash, and ChromaDB.\n\n"
-            "**Agent pipeline**: Orchestrator → Researcher (MCP) → Analyst (Gemini)"
+            "Multi-Agent RAG API supporting medical document upload, "
+            "PDF/image understanding, and citation-aware Q&A.\n\n"
+            "**Agent pipeline**: Orchestrator → Researcher (MCP) → "
+            "Reasoning → Analyst (Gemini) → Guardrail"
         ),
-        version="1.0.0",
+        version="2.0.0",
         docs_url="/docs",
         redoc_url="/redoc",
     )
 
-    # ── CORS ─────────────────────────────────────────────────────────────────────
-    # Allow the React dev server (Vite default: 5173) and production origins.
+    # ── CORS ──────────────────────────────────────────────────────────────────
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[
-            "http://localhost:5173",   # Vite dev server
-            "http://localhost:3000",   # Alternative React port
+            "http://localhost:5173",
+            "http://localhost:3000",
             "http://127.0.0.1:5173",
         ],
         allow_credentials=True,
@@ -45,10 +40,9 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    # ── GZip compression for large AI responses ───────────────────────────────────
     app.add_middleware(GZipMiddleware, minimum_size=1000)
 
-    # ── API Routes ────────────────────────────────────────────────────────────────
+    # ── API Routes ─────────────────────────────────────────────────────────────
     app.include_router(api_router, prefix="/api/v1")
 
     return app
