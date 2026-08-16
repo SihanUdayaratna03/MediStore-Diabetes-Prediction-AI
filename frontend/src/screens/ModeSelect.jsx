@@ -1,4 +1,4 @@
-import { Droplet, Brain, ArrowRight, ArrowLeft, Zap } from 'lucide-react'
+import { Droplet, Brain, FileText, ArrowRight, ArrowLeft, Zap } from 'lucide-react'
 import Tilt3D, { TiltLayer } from '../components/ui/Tilt3D'
 import Reveal from '../components/ui/Reveal'
 
@@ -27,6 +27,19 @@ const MODULES = [
       'Predicts early hospital readmission risk (a proxy for poor glycaemic control and '
       + 'complications) from 52 clinical features across 101,766 UCI hospital records.',
     tags: ['52 Features', 'XGB+LGBM+RF', 'UCI-130 Dataset', 'Readmission Risk'],
+    badge: 'New',
+  },
+  {
+    id: 'doc-intelligence',
+    accent: 'emerald',
+    Icon: FileText,
+    iconColour: '#34d399',
+    name: 'Document Intelligence',
+    version: 'RAG · Gemini Vision + OCR',
+    description:
+      'Upload a medical PDF, doctor\'s report, or image and ask questions about '
+      + 'its contents. Powered by Gemini Vision, OCR, and Multi-Agent RAG.',
+    tags: ['PDF Upload', 'Image OCR', 'Multi-Agent RAG', 'Citation Tracking'],
     badge: 'New',
   },
 ]

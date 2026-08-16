@@ -4,6 +4,7 @@ import ScreenTransition from './components/ui/ScreenTransition'
 import Landing from './screens/Landing'
 import ModeSelect from './screens/ModeSelect'
 import DiabetesPredictor from './screens/DiabetesPredictor'
+import DocIntelligence from './screens/DocIntelligence'
 import './App.css'
 
 // The v3 module is the heavier of the two (52 fields, a large option map), and
@@ -24,12 +25,12 @@ function ScreenFallback() {
 }
 
 /**
- * Screen router. The app has four screens and no URL routing, so navigation is
+ * Screen router. The app has five screens and no URL routing, so navigation is
  * plain state — wrapped in ScreenTransition to give each change a real
  * enter/exit rather than an instant swap.
  */
 export default function App() {
-  // 'landing' | 'mode-select' | 'v2' | 'v3'
+  // 'landing' | 'mode-select' | 'v2' | 'v3' | 'doc-intelligence'
   const [screen, setScreen] = useState('landing')
 
   const goSelect = useCallback(() => setScreen('mode-select'), [])
@@ -42,6 +43,8 @@ export default function App() {
     view = <ModeSelect onSelect={setScreen} onBack={goLanding} />
   } else if (screen === 'v2') {
     view = <DiabetesPredictor onBack={goSelect} />
+  } else if (screen === 'doc-intelligence') {
+    view = <DocIntelligence onBack={goSelect} />
   } else {
     view = (
       <Suspense fallback={<ScreenFallback />}>

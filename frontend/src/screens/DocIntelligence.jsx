@@ -1,20 +1,145 @@
 /**
  * DocIntelligence.jsx
- * TODO: Implement the full Document Intelligence screen.
- *
- * Props:
- *   onBack()  — navigate back to the mode-select screen
+ * ====================
+ * Full-page Medical Document Intelligence screen.
  *
  * Layout (two-column on desktop, stacked on mobile):
  *   ┌─────────────────────────────────────────────────────┐
- *   │  Header: back button + title + session badge        │
+ *   │  TopBar (back button + title)                       │
  *   ├──────────────────────┬──────────────────────────────┤
- *   │  Left Panel          │  Right Panel                 │
- *   │  - DocUpload (idle)  │  - DocChat                   │
- *   │  - Upload progress   │  (disabled until ready)      │
- *   │  - DocViewer (ready) │                              │
+ *   │  DocUpload / Viewer  │  DocChat (messages + input)  │
+ *   │  (left panel)        │  (right panel)               │
+ *   │                      │                              │
+ *   │                      │  CitationPanel (expandable)  │
  *   └──────────────────────┴──────────────────────────────┘
  *
- * Upload state machine: 'idle' → 'uploading' → 'ready' | 'error'
- * Uses useDocSession() hook for state management.
+ * State machine:
+ *   'idle'      → Upload zone shown, no session
+ *   'uploading' → Loading spinner, progress bar
+ *   'ready'     → DocViewer + DocChat enabled
  */
+
+import { useState, useCallback } from 'react'
+import { ArrowLeft, FileText, Sparkles } from 'lucide-react'
+import DocUpload from '../components/DocUpload/DocUpload'
+import DocViewer from '../components/DocViewer/DocViewer'
+import DocChat   from '../components/DocChat/DocChat'
+import Reveal    from '../components/ui/Reveal'
+import { uploadDocument } from '../api/docApi'
+import './DocIntelligence.css'
+
+export default function DocIntelligence({ onBack }) {
+  const [uploadState, setUploadState] = useState('idle')  // 'idle' | 'uploading' | 'ready' | 'error'
+  const [sessionData, setSessionData] = useState(null)    // UploadResponse from backend
+  const [uploadError, setUploadError] = useState(null)
+  const [uploadProgress, setUploadProgress] = useState(0)
+
+  const handleUpload = useCallback(async (file) => {
+    setUploadState('uploading')
+    setUploadError(null)
+    setUploadProgress(0)
+
+    // Simulate progress during upload
+    const progressInterval = setInterval(() => {
+      setUploadProgress(p => Math.min(p + 8, 85))
+    }, 400)
+
+    try {
+      const data = await uploadDocument(file)
+      clearInterval(progressInterval)
+      setUploadProgress(100)
+      setTimeout(() => {
+        setSessionData(data)
+        setUploadState('ready')
+      }, 600)
+    } catch (err) {
+      clearInterval(progressInterval)
+      setUploadError(err.message || 'Upload failed. Please try again.')
+      setUploadState('error')
+    }
+  }, [])
+
+  const handleReset = useCallback(() => {
+    setUploadState('idle')
+    setSessionData(null)
+    setUploadError(null)
+    setUploadProgress(0)
+  }, [])
+
+  return (
+    <div className="doc-intel-screen">
+      {/* ── Top Bar ─────────────────────────────────────────────────────── */}
+      <header className="doc-intel-topbar">
+        <button
+          className="doc-intel-back-btn"
+          onClick={onBack}
+          aria-label="Go back"
+        >
+          <ArrowLeft size={16} aria-hidden="true" />
+          Back
+        </button>
+
+        <div className="doc-intel-title-group">
+          <div className="doc-intel-title-icon">
+            <FileText size={18} aria-hidden="true" />
+          </div>
+          <div>
+            <h1 className="doc-intel-title">Document Intelligence</h1>
+            <span className="doc-intel-subtitle">
+              Upload · Analyse · Ask — Powered by Gemini
+            </span>
+          </div>
+        </div>
+
+        {uploadState === 'ready' && (
+          <div className="doc-intel-session-badge">
+            <Sparkles size={13} aria-hidden="true" />
+            {sessionData?.filename}
+          </div>
+        )}
+      </header>
+
+      {/* ── Main layout ─────────────────────────────────────────────────── */}
+      <main className="doc-intel-main" id="main">
+        {/* LEFT PANEL: Upload zone or Document Viewer */}
+        <section className="doc-intel-left-panel" aria-label="Document panel">
+          {uploadState === 'idle' || uploadState === 'error' ? (
+            <Reveal>
+              <DocUpload
+                onUpload={handleUpload}
+                error={uploadError}
+              />
+            </Reveal>
+          ) : uploadState === 'uploading' ? (
+            <div className="doc-intel-uploading">
+              <div className="doc-intel-upload-progress">
+                <div
+                  className="doc-intel-upload-bar"
+                  style={{ width: `${uploadProgress}%` }}
+                />
+              </div>
+              <p className="doc-intel-upload-status">
+                {uploadProgress < 60
+                  ? 'Uploading document…'
+                  : uploadProgress < 90
+                  ? 'Extracting text & running OCR…'
+                  : 'Building knowledge index…'}
+              </p>
+            </div>
+          ) : (
+            <DocViewer sessionData={sessionData} />
+          )}
+        </section>
+
+        {/* RIGHT PANEL: Chat */}
+        <section className="doc-intel-right-panel" aria-label="Chat panel">
+          <DocChat
+            sessionData={sessionData}
+            isReady={uploadState === 'ready'}
+            onReset={handleReset}
+          />
+        </section>
+      </main>
+    </div>
+  )
+}

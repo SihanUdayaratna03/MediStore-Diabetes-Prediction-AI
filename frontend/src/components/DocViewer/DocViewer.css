@@ -1,1 +1,159 @@
-/* DocViewer.css — TODO: Implement styles for the document viewer component */
+/* DocViewer.css — Uploaded document information and preview styling */
+
+.doc-viewer-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 1.75rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
+.doc-viewer-info-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+}
+
+.doc-viewer-file-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.doc-viewer-icon--pdf {
+  color: #38bdf8;
+}
+
+.doc-viewer-icon--image {
+  color: #a78bfa;
+}
+
+.doc-viewer-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.doc-viewer-filename {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 0.4rem 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.doc-viewer-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.doc-viewer-tag {
+  font-size: 0.72rem;
+  padding: 0.15rem 0.5rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  color: var(--text-muted, #94a3b8);
+}
+
+.doc-viewer-status {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  background: rgba(52, 211, 153, 0.1);
+  border: 1px solid rgba(52, 211, 153, 0.25);
+  border-radius: 9999px;
+  color: #34d399;
+  font-size: 0.78rem;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.doc-viewer-ready-icon {
+  color: #34d399;
+}
+
+/* ── Text preview ─────────────────────────────────────────────────── */
+.doc-viewer-preview {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.doc-viewer-preview-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: none;
+  color: var(--text-muted, #94a3b8);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.doc-viewer-preview-toggle:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+}
+
+.doc-viewer-preview-text {
+  padding: 1rem;
+  max-height: 280px;
+  overflow-y: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.doc-viewer-preview-text pre {
+  margin: 0;
+  font-family: inherit;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text-dim, #94a3b8);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ── Ready Hint ──────────────────────────────────────────────────── */
+.doc-viewer-ready-hint {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.85rem 1rem;
+  background: rgba(52, 211, 153, 0.06);
+  border: 1px solid rgba(52, 211, 153, 0.15);
+  border-radius: 12px;
+}
+
+.doc-viewer-ready-hint span {
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.doc-viewer-ready-hint p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #cbd5e1;
+  line-height: 1.4;
+}
