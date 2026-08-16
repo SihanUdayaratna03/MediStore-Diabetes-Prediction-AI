@@ -1,1 +1,72 @@
-/* CitationPanel.css — TODO: Implement styles for the citation panel component */
+/* CitationPanel.css — Source citation cards styling */
+
+.citation-panel {
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.citation-panel-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #38bdf8;
+  margin: 0;
+}
+
+.citation-panel-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.citation-card {
+  padding: 0.6rem 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.citation-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.citation-card-page {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #34d399;
+}
+
+.citation-card-relevance {
+  font-size: 0.7rem;
+  color: var(--text-dim, #64748b);
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+}
+
+.citation-card-filename {
+  font-size: 0.7rem;
+  color: var(--text-dim, #64748b);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.citation-card-snippet {
+  font-size: 0.78rem;
+  color: #cbd5e1;
+  margin: 0;
+  line-height: 1.4;
+  font-style: italic;
+}
