@@ -25,6 +25,10 @@ FIGURES_DIR   = REPORTS_DIR / "figures"
 
 MCP_SERVERS_DIR = PROJECT_ROOT / "mcp_servers"
 
+# ── Upload & session storage ───────────────────────────────────────────────────
+UPLOADS_DIR      = PROJECT_ROOT / "data" / "uploads"         # raw uploaded files
+SESSION_CHROMA_DIR = PROJECT_ROOT / "data" / "session_chroma"  # per-session vector DBs
+
 # ── Datasets ───────────────────────────────────────────────────────────────────
 PIMA_CSV   = RAW_DATA_DIR / "diabetes.csv"        # PIMA Indians (v2)
 UCI130_CSV = RAW_DATA_DIR / "diabetic_data.csv"   # UCI 130-US Hospitals (v3)
@@ -45,4 +49,10 @@ V3_FEATURES  = MODELS_V3_DIR / "feature_names_v3.json"
 def ensure_dirs() -> None:
     """Create the output directories that training runs write into."""
     for directory in (MODELS_V2_DIR, MODELS_V3_DIR, FIGURES_DIR):
+        directory.mkdir(parents=True, exist_ok=True)
+
+
+def ensure_upload_dirs() -> None:
+    """Create upload and session-chroma directories on startup."""
+    for directory in (UPLOADS_DIR, SESSION_CHROMA_DIR):
         directory.mkdir(parents=True, exist_ok=True)

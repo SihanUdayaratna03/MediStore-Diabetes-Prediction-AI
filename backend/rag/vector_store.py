@@ -1,51 +1,19 @@
 """
-vector_store.py
-===============
-ChromaDB wrappers for the RAG pipeline.
-
-Two classes are provided:
-
-  MedicalVectorStore  — Singleton for the shared medical-guidelines knowledge
-                        base (pre-ingested, read-heavy, lives in CHROMA_DB_DIR).
-
-  SessionVectorStore  — Per-upload collection for a single user session.
-                        Created on document upload, queried during chat,
-                        and isolated from every other session.
+Reusable ChromaDB wrapper for the RAG pipeline.
+Supports semantic search with configurable embedding model.
 """
 
 import chromadb
 from chromadb.utils import embedding_functions
 
+
 from backend.config import CHROMA_DB_DIR
 
 DB_PATH = str(CHROMA_DB_DIR)
 
-# Shared embedding function used by both store classes
-_EMBEDDING_MODEL = "all-MiniLM-L6-v2"
-
-
-# ---------------------------------------------------------------------------
-# Shared helper
-# ---------------------------------------------------------------------------
-
-def _get_embedding_fn():
-    """Returns a SentenceTransformer embedding function (cached by chromadb)."""
-    return embedding_functions.SentenceTransformerEmbeddingFunction(
-        model_name=_EMBEDDING_MODEL
-    )
-
-
-# ---------------------------------------------------------------------------
-# MedicalVectorStore — shared guidelines knowledge base
-# ---------------------------------------------------------------------------
 
 class MedicalVectorStore:
-    """Singleton-style ChromaDB wrapper with sentence-transformer embeddings.
-
-    Wraps the pre-ingested 'medical_guidelines' collection that lives in the
-    shared CHROMA_DB_DIR.  Agents call format_for_agent() to pull relevant
-    context before generating a response.
-    """
+    """Singleton-style ChromaDB wrapper with sentence-transformer embeddings."""
 
     _instance = None
 
@@ -60,7 +28,9 @@ class MedicalVectorStore:
             return
         self._initialised = True
 
-        embedding_fn = _get_embedding_fn()
+        embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
+            model_name="all-MiniLM-L6-v2"
+        )
         self.client = chromadb.PersistentClient(path=DB_PATH)
         self.collection = self.client.get_or_create_collection(
             name="medical_guidelines",
@@ -70,9 +40,7 @@ class MedicalVectorStore:
 
     def search(self, query: str, n_results: int = 3) -> list[dict]:
         """
-        Semantic search over the medical-guidelines collection.
-
-        Returns a list of dicts with 'document', 'metadata', and 'similarity'.
+        Returns a list of dicts with 'document' and 'metadata' keys.
         """
         results = self.collection.query(
             query_texts=[query],
@@ -88,15 +56,15 @@ class MedicalVectorStore:
                 results["distances"][0],
             ):
                 output.append({
-                    "document":   doc,
-                    "metadata":   meta,
-                    "similarity": round(1 - dist, 4),  # cosine distance → similarity
+                    "document": doc,
+                    "metadata": meta,
+                    "similarity": round(1 - dist, 4),  # Convert cosine distance → similarity
                 })
         return output
 
     def format_for_agent(self, query: str, n_results: int = 3) -> str:
         """
-        Returns retrieved guideline docs as a formatted string for LLM consumption.
+        Returns retrieved docs as a formatted string for LLM consumption.
         """
         results = self.search(query, n_results)
         if not results:
@@ -113,70 +81,56 @@ class MedicalVectorStore:
         return "\n".join(lines)
 
 
-# ---------------------------------------------------------------------------
-# SessionVectorStore — per-upload isolated collection
-# ---------------------------------------------------------------------------
-
 class SessionVectorStore:
     """
     Per-session ChromaDB vector store for uploaded documents.
-
-    Each upload gets its own ChromaDB directory and collection.
-    This ensures complete isolation between user sessions.
-
-    Lifecycle:
-      1. Created by the upload API endpoint after document processing.
-      2. Populated once via add_chunks() with all DocumentChunk objects.
-      3. Queried repeatedly via search() / format_for_agent() during chat.
-      4. Discarded when the session expires (SessionStore TTL = 24 h).
+    Each upload gets its own isolated Chroma collection.
     """
 
-    def __init__(self, session_id: str, chroma_path: str):
-        embedding_fn = _get_embedding_fn()
+    def __init__(self, session_id: str, chroma_path: str) -> None:
         self.session_id = session_id
+        embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
+            model_name="all-MiniLM-L6-v2"
+        )
         self.client = chromadb.PersistentClient(path=chroma_path)
         self.collection = self.client.get_or_create_collection(
-            name=f"session_{session_id[:8]}",   # short prefix for readability
+            name=f"session_{session_id[:8]}",
             embedding_function=embedding_fn,
             metadata={"hnsw:space": "cosine"},
         )
 
-    # ------------------------------------------------------------------
-    # Ingestion
-    # ------------------------------------------------------------------
-
     def add_chunks(self, chunks: list) -> None:
         """
-        Ingest a list of DocumentChunk objects into this session's collection.
-        Called once after document upload + chunking.
+        Embed and store DocumentChunk objects.
+        Each chunk is stored with metadata for citation retrieval.
         """
         if not chunks:
             return
-        self.collection.add(
-            ids=[c.chunk_id for c in chunks],
-            documents=[c.text for c in chunks],
-            metadatas=[c.metadata_dict for c in chunks],
-        )
 
-    # ------------------------------------------------------------------
-    # Retrieval
-    # ------------------------------------------------------------------
+        ids       = [c.chunk_id for c in chunks]
+        documents = [c.text for c in chunks]
+        metadatas = [
+            {
+                "session_id":   c.session_id,
+                "page_number":  str(c.page_number),
+                "chunk_index":  c.chunk_index,
+                "text_snippet": c.text_snippet,
+                "chunk_id":     c.chunk_id,
+            }
+            for c in chunks
+        ]
+        self.collection.add(ids=ids, documents=documents, metadatas=metadatas)
 
     def search(self, query: str, n_results: int = 5) -> list[dict]:
-        """
-        Semantic search within this session's document.
-
-        Returns list of dicts with 'text', 'metadata', and 'similarity'.
-        n_results is automatically clamped to the collection size so
-        ChromaDB never raises an 'n_results > count' error.
-        """
+        """Return top-n results with similarity scores."""
         count = self.collection.count()
         if count == 0:
             return []
+        n_results = min(n_results, count)
 
         results = self.collection.query(
             query_texts=[query],
-            n_results=min(n_results, count),
+            n_results=n_results,
             include=["documents", "metadatas", "distances"],
         )
 
@@ -188,46 +142,42 @@ class SessionVectorStore:
                 results["distances"][0],
             ):
                 output.append({
-                    "text":       doc,
+                    "document":   doc,
                     "metadata":   meta,
                     "similarity": round(1 - dist, 4),
                 })
         return output
 
-    def format_for_agent(
-        self, query: str, n_results: int = 5
-    ) -> tuple[str, list[dict]]:
+    def format_for_agent(self, query: str, n_results: int = 5) -> tuple[str, list[dict]]:
         """
-        Returns (formatted_string_for_LLM, raw_citations_list).
+        Returns (formatted_text, citations_list) for use in the agent pipeline.
 
-        The formatted string is injected directly into the agent's prompt.
-        The citations list is JSON-serializable and forwarded to the frontend
-        so the UI can render source references alongside the AI response.
+        citations_list entries match the CitationRef schema in routes.py.
         """
         results = self.search(query, n_results)
         if not results:
             return "No relevant content found in the uploaded document.", []
 
-        filename = results[0]["metadata"].get("filename", "uploaded document")
-        lines = [f"**Retrieved from uploaded document '{filename}':**\n"]
+        lines     = ["**Relevant content from your uploaded document:**\n"]
         citations = []
 
-        for i, r in enumerate(results, 1):
-            meta = r["metadata"]
-            page = meta.get("page_number", "?")
-            sim  = r["similarity"]
-            text = r["text"]
+        for i, r in enumerate(results):
+            meta       = r["metadata"]
+            page       = meta.get("page_number", "unknown")
+            similarity = r["similarity"]
+            doc        = r["document"]
 
-            lines.append(f"[Chunk {i}] Page {page} (relevance: {sim:.1%})")
-            lines.append(f"  {text}\n")
+            lines.append(f"[Page {page}] (relevance: {similarity:.2%})")
+            lines.append(f"{doc}\n")
 
             citations.append({
-                "chunk_index":  i,
+                "chunk_index":  int(meta.get("chunk_index", i)),
                 "page_number":  page,
-                "filename":     meta.get("filename", ""),
-                "text_snippet": text[:200] + "..." if len(text) > 200 else text,
-                "similarity":   sim,
+                "filename":     meta.get("session_id", self.session_id),
+                "text_snippet": meta.get("text_snippet", doc[:150]),
+                "similarity":   similarity,
                 "chunk_id":     meta.get("chunk_id", ""),
             })
 
         return "\n".join(lines), citations
+
