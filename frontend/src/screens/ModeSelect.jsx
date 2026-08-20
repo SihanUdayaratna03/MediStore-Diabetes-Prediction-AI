@@ -1,4 +1,4 @@
-import { Droplet, Brain, FileText, ArrowRight, ArrowLeft, Zap } from 'lucide-react'
+import { Droplet, Brain, FileText, MapPin, ArrowRight, ArrowLeft, Zap } from 'lucide-react'
 import Tilt3D, { TiltLayer } from '../components/ui/Tilt3D'
 import Reveal from '../components/ui/Reveal'
 
@@ -41,6 +41,19 @@ const MODULES = [
       + 'its contents. Powered by Gemini Vision, OCR, and Multi-Agent RAG.',
     tags: ['PDF Upload', 'Image OCR', 'Multi-Agent RAG', 'Citation Tracking'],
     badge: 'New',
+  },
+  {
+    id: 'care-locator',
+    accent: 'sky',
+    Icon: MapPin,
+    iconColour: '#38bdf8',
+    name: 'Care & Supply Locator',
+    version: 'Google Maps · Real-Time Network',
+    description:
+      'Interactive Google Map connecting patients to endocrinologists, diagnostic labs, '
+      + 'and 24/7 pharmacies stocked with insulin, CGMs, and testing strips.',
+    tags: ['Google Maps API', 'Endocrinology', '24/7 Pharmacies', 'Insulin Cold-Chain'],
+    badge: 'Live',
   },
 ]
 

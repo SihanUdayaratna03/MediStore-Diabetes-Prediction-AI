@@ -255,7 +255,7 @@ function AdvancedSection({ form, onChange }) {
 }
 
 // ─── Main component ───────────────────────────────────────────────────────────
-export default function ComplicationPredictor({ onBack }) {
+export default function ComplicationPredictor({ onBack, onOpenCareMap }) {
   const [form, setForm] = useState(DEFAULT_FORM)
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState(null)
@@ -561,6 +561,7 @@ export default function ComplicationPredictor({ onBack }) {
               gaugeCaption="Readmission risk"
               shapDescription="Which clinical features drove this readmission risk prediction. Features pushing right increase risk; features pushing left lower it."
               disclaimer="This tool is for educational and research purposes only. Predictions are based on historical hospital data and do not constitute clinical advice, diagnosis, or treatment. Always consult a qualified healthcare professional."
+              onOpenCareMap={onOpenCareMap}
             />
           )}
         </main>

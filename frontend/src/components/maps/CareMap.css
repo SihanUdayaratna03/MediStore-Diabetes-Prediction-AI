@@ -1,0 +1,667 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   MediStore AI — Full-Screen Care & Supply Locator Theme
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.ms-care-locator-page {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+  overflow: hidden;
+  background: rgba(2, 6, 23, 0.75);
+}
+
+.ms-care-locator-main {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  padding: 0 var(--sp-4) var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.ms-care-locator-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+/* ── Top Filter Bar ──────────────────────────────────────────────────────── */
+.ms-map-filter-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: var(--r-lg, 12px);
+  padding: 8px 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  flex-shrink: 0;
+}
+
+.ms-map-categories {
+  display: flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.ms-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--r-pill, 9999px);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.ms-filter-chip:hover {
+  background: rgba(56, 189, 248, 0.14);
+  border-color: var(--sky-400);
+  color: var(--text-main);
+  transform: translateY(-1px);
+}
+
+.ms-filter-chip--active {
+  background: rgba(56, 189, 248, 0.22);
+  border-color: var(--sky-400);
+  color: var(--sky-200);
+  font-weight: 600;
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
+}
+
+.ms-recommended-badge {
+  font-size: 0.62rem;
+  background: var(--status-critical, #ef4444);
+  color: #fff;
+  padding: 1px 6px;
+  border-radius: var(--r-pill, 9999px);
+  text-transform: uppercase;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.ms-btn-locate {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: rgba(2, 132, 199, 0.25);
+  border: 1px solid var(--sky-400);
+  border-radius: var(--r-pill, 9999px);
+  color: var(--sky-200);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+}
+
+.ms-btn-locate:hover {
+  background: var(--sky-500);
+  color: #fff;
+  box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+}
+
+/* ── Content Grid ────────────────────────────────────────────────────────── */
+.ms-map-content-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: var(--sp-3);
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+}
+
+@media (max-width: 960px) {
+  .ms-map-content-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: 260px 1fr;
+  }
+}
+
+/* ── Left Sidebar (Facility list) ────────────────────────────────────────── */
+.ms-facility-sidebar {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  padding: var(--sp-3);
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  border-radius: var(--r-lg, 12px);
+  overflow: hidden;
+}
+
+.ms-map-search-form {
+  position: relative;
+  margin-bottom: var(--sp-2);
+  flex-shrink: 0;
+}
+
+.ms-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--sky-400);
+  pointer-events: none;
+}
+
+.ms-map-search-input {
+  width: 100%;
+  padding: 8px 32px 8px 36px;
+  background: rgba(2, 6, 23, 0.65);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  border-radius: var(--r-md, 8px);
+  color: var(--text-main);
+  font-size: 0.84rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.ms-map-search-input:focus {
+  border-color: var(--sky-400);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+}
+
+.ms-search-clear,
+.ms-search-submit-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--sky-400);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.ms-search-clear {
+  color: var(--text-dim);
+}
+
+.ms-search-clear:hover {
+  color: #fff;
+}
+
+.ms-search-submit-btn:hover {
+  color: var(--sky-200);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.ms-reset-search-btn {
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: var(--sky-300);
+  font-size: 0.68rem;
+  padding: 1px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.ms-reset-search-btn:hover {
+  background: var(--sky-500);
+  color: #fff;
+}
+
+.ms-facility-meta-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 4px 8px;
+  font-size: 0.74rem;
+  color: var(--text-dim);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  margin-bottom: var(--sp-2);
+  flex-shrink: 0;
+}
+
+.ms-facility-count {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--sky-300);
+  font-weight: 600;
+}
+
+.ms-live-gps-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(16, 185, 129, 0.18);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: var(--status-good, #10b981);
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: var(--r-pill, 9999px);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.ms-enable-gps-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: var(--sky-200);
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: var(--r-pill, 9999px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ms-enable-gps-pill:hover {
+  background: var(--sky-500);
+  color: #fff;
+}
+
+.ms-website-link {
+  color: var(--sky-300);
+  text-decoration: none;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.ms-website-link:hover {
+  color: var(--sky-100);
+  text-decoration: underline;
+}
+
+.ms-distance-badge {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(56, 189, 248, 0.18);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: var(--sky-200);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--r-pill, 9999px);
+}
+
+.ms-facility-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding-right: 4px;
+}
+
+/* Custom Scrollbar for Sidebar */
+.ms-facility-list::-webkit-scrollbar {
+  width: 5px;
+}
+.ms-facility-list::-webkit-scrollbar-track {
+  background: rgba(2, 6, 23, 0.4);
+  border-radius: 4px;
+}
+.ms-facility-list::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.3);
+  border-radius: 4px;
+}
+.ms-facility-list::-webkit-scrollbar-thumb:hover {
+  background: var(--sky-400);
+}
+
+.ms-facility-card {
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: var(--r-md, 8px);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ms-facility-card:hover {
+  background: rgba(56, 189, 248, 0.08);
+  border-color: rgba(56, 189, 248, 0.4);
+  transform: translateX(3px);
+}
+
+.ms-facility-card--selected {
+  background: rgba(56, 189, 248, 0.16);
+  border-color: var(--sky-400);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.25);
+}
+
+.ms-facility-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.ms-facility-badge {
+  font-size: 0.68rem;
+  color: var(--sky-300);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.ms-facility-distance {
+  font-size: 0.72rem;
+  color: var(--text-dim);
+  font-weight: 500;
+}
+
+.ms-facility-card__title {
+  font-size: 0.92rem;
+  color: var(--text-main);
+  margin-bottom: 3px;
+  line-height: 1.3;
+}
+
+.ms-facility-card__addr {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+.ms-facility-supplies {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 6px;
+  font-size: 0.72rem;
+  color: var(--sky-300);
+  background: rgba(56, 189, 248, 0.08);
+  padding: 3px 6px;
+  border-radius: 4px;
+}
+
+.ms-map-loading,
+.ms-map-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  gap: var(--sp-2);
+  color: var(--text-muted);
+  text-align: center;
+  font-size: 0.84rem;
+}
+
+/* ── Right: Map Canvas ───────────────────────────────────────────────────── */
+.ms-map-canvas-wrapper {
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
+  padding: 0;
+  border-radius: var(--r-lg, 12px);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  background: #090d16;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+}
+
+/* ── Google Maps Custom InfoWindow ───────────────────────────────────────── */
+.ms-info-window {
+  padding: 6px 8px;
+  color: #0f172a;
+  max-width: 220px;
+}
+
+.ms-info-title {
+  display: block;
+  font-size: 0.88rem;
+  color: #0f172a;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.ms-info-addr {
+  font-size: 0.74rem;
+  color: #475569;
+  margin-bottom: 6px;
+  line-height: 1.25;
+}
+
+.ms-info-btn {
+  width: 100%;
+  background: #0284c7;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.ms-info-btn:hover {
+  background: #0369a1;
+}
+
+/* ── Place Details Drawer ────────────────────────────────────────────────── */
+.ms-place-drawer {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  right: 14px;
+  max-height: calc(100% - 28px);
+  max-width: 600px;
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--sky-400);
+  border-radius: var(--r-lg, 12px);
+  padding: 16px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(56, 189, 248, 0.2);
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+  animation: msDrawerSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes msDrawerSlideUp {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.ms-place-drawer__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-shrink: 0;
+}
+
+.ms-place-drawer__category {
+  font-size: 0.72rem;
+  color: var(--sky-300);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.ms-place-drawer__title {
+  font-size: 1.1rem;
+  color: var(--text-main);
+  margin: 2px 0 4px;
+  line-height: 1.25;
+}
+
+.ms-place-drawer__rating {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.ms-reviews {
+  font-size: 0.74rem;
+  color: var(--text-dim);
+}
+
+.ms-drawer-close {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.ms-drawer-close:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fff;
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+.ms-place-drawer__body {
+  overflow-y: auto;
+  max-height: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-right: 4px;
+}
+
+.ms-place-drawer__body::-webkit-scrollbar {
+  width: 4px;
+}
+.ms-place-drawer__body::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.3);
+  border-radius: 4px;
+}
+
+.ms-place-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+.ms-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ms-meta-icon {
+  flex-shrink: 0;
+}
+
+.ms-phone-link {
+  color: var(--sky-300);
+  text-decoration: none;
+}
+.ms-phone-link:hover {
+  text-decoration: underline;
+}
+
+.ms-supply-section,
+.ms-services-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ms-supply-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.ms-supply-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.ms-supply-pill {
+  display: inline-block;
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: var(--sky-200);
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: var(--r-pill, 9999px);
+}
+
+.ms-service-list {
+  list-style: none;
+  padding-left: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 4px;
+}
+
+.ms-service-list li {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  position: relative;
+  padding-left: 14px;
+}
+
+.ms-service-list li::before {
+  content: '•';
+  color: var(--status-good, #10b981);
+  position: absolute;
+  left: 4px;
+  top: 0;
+}
+
+.ms-place-drawer__footer {
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.ms-btn--full {
+  width: 100%;
+  justify-content: center;
+}

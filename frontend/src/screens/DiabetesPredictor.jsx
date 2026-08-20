@@ -43,7 +43,7 @@ const LOW_RISK_RECS = [
  * original App.jsx: same endpoint, same payload, same clinical thresholds.
  * Only the presentation layer is new.
  */
-export default function DiabetesPredictor({ onBack }) {
+export default function DiabetesPredictor({ onBack, onOpenCareMap }) {
   const [formData, setFormData] = useState(INITIAL_FORM)
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState(null)
@@ -208,6 +208,7 @@ export default function DiabetesPredictor({ onBack }) {
               gaugeCaption="Diabetes risk"
               shapDescription="How each biomarker influenced the model's decision. Features pushing right increase diabetes risk; features pushing left lower it."
               disclaimer="This tool is for educational purposes only. It does not constitute medical advice, diagnosis, or treatment. Always consult a qualified healthcare professional."
+              onOpenCareMap={onOpenCareMap}
             />
           )}
         </main>
