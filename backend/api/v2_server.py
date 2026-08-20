@@ -12,7 +12,10 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
+from typing import Optional
+
 from backend.config import V2_MODEL, V2_SCALER, V2_EXPLAINER, V2_FEATURES
+from backend.api.places_service import search_nearby_facilities, search_places_by_name
 
 app = FastAPI(title="MediStore AI API")
 
@@ -128,3 +131,55 @@ def predict(data: PatientData):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/places/nearby")
+async def get_nearby_places(
+    lat: float = 6.9271,
+    lng: float = 79.8612,
+    radius: int = 10000,
+    category: Optional[str] = "all",
+    risk_level: Optional[str] = "all"
+):
+    """
+    Returns nearby medical clinics, endocrinologists, diagnostic labs,
+    24/7 pharmacies, and diabetic supply stores.
+    """
+    facilities = await search_nearby_facilities(
+        lat=lat,
+        lng=lng,
+        radius=radius,
+        category=category,
+        risk_level=risk_level
+    )
+    return {
+        "status": "success",
+        "count": len(facilities),
+        "center": {"lat": lat, "lng": lng},
+        "facilities": facilities
+    }
+
+
+@app.get("/api/places/search")
+async def search_places_endpoint(
+    query: str,
+    lat: float = 6.9271,
+    lng: float = 79.8612,
+    radius: int = 15000
+):
+    """
+    Searches for any pharmacy, hospital, clinic, or diagnostic lab by name or keyword.
+    """
+    facilities = await search_places_by_name(
+        query=query,
+        lat=lat,
+        lng=lng,
+        radius=radius
+    )
+    return {
+        "status": "success",
+        "query": query,
+        "count": len(facilities),
+        "center": {"lat": lat, "lng": lng},
+        "facilities": facilities
+    }

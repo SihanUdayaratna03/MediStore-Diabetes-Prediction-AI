@@ -5,6 +5,7 @@ import Landing from './screens/Landing'
 import ModeSelect from './screens/ModeSelect'
 import DiabetesPredictor from './screens/DiabetesPredictor'
 import DocIntelligence from './screens/DocIntelligence'
+import CareLocator from './screens/CareLocator'
 import './App.css'
 
 // The v3 module is the heavier of the two (52 fields, a large option map), and
@@ -30,11 +31,17 @@ function ScreenFallback() {
  * enter/exit rather than an instant swap.
  */
 export default function App() {
-  // 'landing' | 'mode-select' | 'v2' | 'v3' | 'doc-intelligence'
+  // 'landing' | 'mode-select' | 'v2' | 'v3' | 'doc-intelligence' | 'care-locator'
   const [screen, setScreen] = useState('landing')
+  const [careMapContext, setCareMapContext] = useState({ riskLevel: 'all', category: 'all' })
 
   const goSelect = useCallback(() => setScreen('mode-select'), [])
   const goLanding = useCallback(() => setScreen('landing'), [])
+
+  const handleOpenCareMap = useCallback(({ riskLevel = 'all', category = 'all' } = {}) => {
+    setCareMapContext({ riskLevel, category })
+    setScreen('care-locator')
+  }, [])
 
   let view
   if (screen === 'landing') {
@@ -42,13 +49,21 @@ export default function App() {
   } else if (screen === 'mode-select') {
     view = <ModeSelect onSelect={setScreen} onBack={goLanding} />
   } else if (screen === 'v2') {
-    view = <DiabetesPredictor onBack={goSelect} />
+    view = <DiabetesPredictor onBack={goSelect} onOpenCareMap={handleOpenCareMap} />
   } else if (screen === 'doc-intelligence') {
     view = <DocIntelligence onBack={goSelect} />
+  } else if (screen === 'care-locator') {
+    view = (
+      <CareLocator
+        onBack={goSelect}
+        riskLevel={careMapContext.riskLevel}
+        preselectedCategory={careMapContext.category}
+      />
+    )
   } else {
     view = (
       <Suspense fallback={<ScreenFallback />}>
-        <ComplicationPredictor onBack={goSelect} />
+        <ComplicationPredictor onBack={goSelect} onOpenCareMap={handleOpenCareMap} />
       </Suspense>
     )
   }

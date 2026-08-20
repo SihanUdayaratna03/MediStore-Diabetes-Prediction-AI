@@ -1,6 +1,7 @@
 import {
   ShieldCheck, ShieldAlert, AlertTriangle, AlertOctagon,
   CheckCircle2, Info, Scale, Brain, Activity,
+  MapPin, ArrowRight, Package,
 } from 'lucide-react'
 import RiskGauge from '../charts/RiskGauge'
 import ProbabilityBars from '../charts/ProbabilityBars'
@@ -74,6 +75,7 @@ export default function ResultDashboard({
   gaugeCaption,
   shapDescription,
   disclaimer,
+  onOpenCareMap,
 }) {
   const isHigh = result.prediction === 1
   const statusColour = isHigh ? 'var(--status-critical)' : 'var(--status-good)'
@@ -106,6 +108,65 @@ export default function ResultDashboard({
           {result.probability_positive.toFixed(1)}%
         </div>
       </div>
+
+      {/* ── Care & Supply Locator Action Banner ─────────────────────────── */}
+      <Reveal delay={40}>
+        <div
+          className="glass-panel"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: 'var(--sp-4)',
+            borderColor: isHigh ? 'rgba(239, 68, 68, 0.4)' : 'rgba(56, 189, 248, 0.4)',
+            background: isHigh ? 'rgba(239, 68, 68, 0.08)' : 'rgba(2, 132, 199, 0.08)',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--sp-3)' }}>
+            <div
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: '50%',
+                background: isHigh ? 'rgba(239, 68, 68, 0.2)' : 'rgba(56, 189, 248, 0.2)',
+                display: 'grid',
+                placeItems: 'center',
+                color: isHigh ? 'var(--status-critical)' : 'var(--sky-400)',
+              }}
+            >
+              <MapPin size={22} />
+            </div>
+            <div>
+              <h4 style={{ margin: 0, fontSize: '1rem', color: 'var(--text-main)' }}>
+                {isHigh
+                  ? 'Action Required: Connect with Diabetes Specialists & Supplies'
+                  : 'Preventive Care: Locate Diagnostic Labs & Pharmacies'}
+              </h4>
+              <p style={{ margin: '2px 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                Find accredited endocrinologists, HbA1c testing labs, and 24/7 pharmacies with insulin &amp; CGM stock nearby.
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            className="ms-btn ms-btn--primary"
+            onClick={() => {
+              if (typeof onOpenCareMap === 'function') {
+                onOpenCareMap({
+                  riskLevel: isHigh ? 'high' : 'low',
+                  category: isHigh ? 'endocrinologist' : 'pharmacy',
+                })
+              }
+            }}
+          >
+            <Package size={16} />
+            Open Care &amp; Supply Map
+            <ArrowRight size={16} />
+          </button>
+        </div>
+      </Reveal>
 
       {/* ── Gauge + probability bars ────────────────────────────────────── */}
       <Reveal>
