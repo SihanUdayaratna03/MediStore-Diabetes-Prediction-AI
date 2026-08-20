@@ -28,9 +28,12 @@ joblib>=1.4.2
 numpy>=2.0.0
 shap>=0.47.0
 
-# Utilities
+# Utilities & Document Processing
 python-dotenv>=1.0.1
 pydantic>=2.10.3
 httpx>=0.28.1
 tenacity>=9.0.0
 structlog>=24.4.0
+aiofiles>=24.1.0
+python-multipart>=0.0.9
+pymupdf>=1.24.0
